@@ -37,6 +37,16 @@ class Casting
 
   public:
 
+  inline static Int32 u32ToI32( Uint32 x )
+    {
+    Int32 result = x & 0x7FFFFFFF;
+    return result;
+    }
+
+
+
+
+
   inline static Uint64 i32ToU64( Int32 x )
     {
     if( x < 0 )

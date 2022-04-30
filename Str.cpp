@@ -122,6 +122,12 @@ if( n == 0 )
 char tempBuf[100] = { 1,2,3 };
 
 Int32 last = 0;
+bool isNegative = false;
+if( n < 0 )
+  {
+  isNegative = true;
+  n = n * -1;
+  }
 
 Int64 toDivide = n;
 while( toDivide != 0 )
@@ -133,6 +139,12 @@ while( toDivide != 0 )
   last++;
 
   toDivide = toDivide / 10;
+  }
+
+if( isNegative )
+  {
+  tempBuf[last] = '-';
+  last++;
   }
 
 arraySize = last;
