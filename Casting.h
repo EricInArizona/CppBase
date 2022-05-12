@@ -37,13 +37,14 @@ class Casting
 
   public:
 
-  inline static Int32 u32ToI32( Uint32 x )
+  // Yet another reason why you should not
+  // #define macros.
+  inline static Int32 u32ToI32ForMacro( Uint32 x )
     {
     Int32 result = x & 0x7FFFFFFF;
+    result |= 0x80000000;
     return result;
     }
-
-
 
 
 
