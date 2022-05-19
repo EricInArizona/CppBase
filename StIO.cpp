@@ -12,8 +12,8 @@
 #include "StIO.h"
 #include <stdio.h>
 // #include <wchar.h>
-
-
+// #include <time.h>
+// #include <select.h>
 
 
 
@@ -78,10 +78,10 @@ printf( "%s", toWrite );
 
 
 
-
 void StIO::putS( const char* toWrite )
 {
-// This adds a newline character to the end of the string.
+// This adds a newline character to the end
+// of the string.
 
 // puts( "Testing.\n" );
 
@@ -106,3 +106,58 @@ void StIO::putChar( const int c )
 // int putchar( int c );
 putchar( c );
 }
+
+
+
+void StIO::putCharBuf( const CharBuf& charBuf )
+{
+const Int32 max = charBuf.getLast();
+for( Int32 count = 0; count < max; count++ )
+  putchar( charBuf.valAt( count ));
+
+}
+
+/*
+In Windows:
+#include <windows.h>
+winuser.h
+And link to what dll?
+SHORT GetKeyState( [in] int nVirtKey );
+
+*/
+
+/*
+This might work in Linux.
+Non blocking see if a key was pressed.
+bool StIO::checkKey( void )
+{
+// In winsock2.h
+typedef struct timeval {
+    long tv_sec;
+    long tv_usec;
+} timeval;
+
+
+struct timeval tv;
+fd_set readfds;
+
+tv.tv_sec = 0;
+tv.tv_usec = 1; // 500000; // microseconds.
+
+FD_ZERO( &readfds );
+FD_SET( 0, &readfds );
+
+select( // Casting::U64ToI32( STDIN_FILENO + 1 ),
+        0,
+         &readfds, nullptr,
+                 nullptr, &tv );
+
+if( FD_ISSET( STDIN_FILENO, &readfds ))
+  {
+  putS( "A key was pressed." );
+  return true;
+  }
+
+return false;
+}
+*/

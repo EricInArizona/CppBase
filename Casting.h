@@ -42,7 +42,9 @@ class Casting
   inline static Int32 u32ToI32ForMacro( Uint32 x )
     {
     Int32 result = x & 0x7FFFFFFF;
-    result |= 0x80000000;
+    if( (x & 0x80000000) != 0 )
+      result |= 0x80000000;
+
     return result;
     }
 

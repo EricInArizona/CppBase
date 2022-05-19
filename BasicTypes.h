@@ -41,8 +41,19 @@
 // typedef char Int8;
 typedef unsigned char Uint8;
 typedef unsigned short Uint16;
+
+// For Linux:
+// typedef int Int32;
+// typedef unsigned int Uint32;
+
+// For Windows.
 typedef int Int32;
 typedef unsigned int Uint32;
+
+// For Windows compatibility.
+typedef long Int32L;
+typedef unsigned long Uint32L;
+
 
 // These are right with Clang on my 64 bit machine.
 
@@ -65,6 +76,9 @@ typedef double Float64;
 
 // On Linux.
 // typedef long double Float128;
+
+typedef Uint64 SocketCpp; // Windows
+// typedef Int32 SocketCpp; // Linux
 
 
 
@@ -92,6 +106,12 @@ class BasicTypes
 
     if( sizeof( Uint32 ) != 4 )
       throw "Uint32 type is not the right size.";
+
+    if( sizeof( Int32L ) != 4 )
+      throw "Int32L type is not the right size.";
+
+    if( sizeof( Uint32L ) != 4 )
+      throw "Uint32L type is not the right size.";
 
     if( sizeof( Int64 ) != 8 )
       throw "Int64 type is not the right size.";

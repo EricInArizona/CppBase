@@ -14,10 +14,8 @@
 
 
 #include "BasicTypes.h"
+#include "../CppBase/CharBuf.h"
 
-
-
-// This is a wrapper for the C functions in stdio.h.
 
 
 class StIO
@@ -30,5 +28,7 @@ class StIO
   static void putS( const char* toWrite );
   static void printFD( const Int32 d );
   static void putChar( const int c );
+  static void putCharBuf( const CharBuf& charBuf );
+  bool checkKey( void );
 
   };

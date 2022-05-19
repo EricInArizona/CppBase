@@ -41,7 +41,6 @@ extern "C" {
 // volatile Int32 ForTest;
 
 
-
 // Declare it, then define it.
 void aCFunction( Int32 something );
 
