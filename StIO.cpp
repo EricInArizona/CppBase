@@ -71,6 +71,9 @@ t ptrdiff_t ptrdiff_t
 
 void StIO::printF( const char* toWrite )
 {
+if( toWrite == nullptr )
+  return;
+
 // printf( "Testing.\n" );
 
 printf( "%s", toWrite );
@@ -80,6 +83,9 @@ printf( "%s", toWrite );
 
 void StIO::putS( const char* toWrite )
 {
+if( toWrite == nullptr )
+  return;
+
 // This adds a newline character to the end
 // of the string.
 
