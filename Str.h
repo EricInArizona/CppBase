@@ -11,10 +11,8 @@
 #pragma once
 
 
-// For variable length strings and other string operations.
-
-
 #include "BasicTypes.h"
+
 
 
 class Str

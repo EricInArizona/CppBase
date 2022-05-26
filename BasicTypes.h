@@ -20,21 +20,23 @@
 
 
 // I never use the C Preprocessor except for
-// #include statements.  I never include any
+// #include statements, and rarely a #pragma
+// statement.  I never include any
 // standard header files in my own header files,
 // they are only in .cpp files, where they will
 // affect only that compilation unit.  That way
 // I can #include my own header files without
 // having to worry about how they can corrupt
 // other files with macros.
+// I don't use the #define statement.
+
 // So I don't #include here any types that are
 // defined in standard header files like a
 // types.h kind of file.
 
-// Also, in my BuildProj.sh file, I have it
+// Also, in my BuildProj file, I have it
 // warn about everything: -Weverything
-// So I can fix any problems, like type cast
-// warnings.
+// So I can see and fix any problems.
 
 
 
@@ -79,6 +81,8 @@ typedef double Float64;
 
 typedef Uint64 SocketCpp; // Windows
 // typedef Int32 SocketCpp; // Linux
+
+
 
 
 

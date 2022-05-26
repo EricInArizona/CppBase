@@ -17,6 +17,7 @@
 #include "CharBuf.h"
 
 
+
 class FileIO
   {
   private:
@@ -34,3 +35,4 @@ class FileIO
   void appendCharBuf( const CharBuf& buf );
 
   };
+
