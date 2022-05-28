@@ -76,7 +76,7 @@ char* buffer = new char[Casting::i64ToU64(
                                      howMany )];
 inFile.read( buffer, howMany );
 
-cBuf.appendCharBuf( buffer, Casting::i64ToI32(
+cBuf.appendCharArray( buffer, Casting::i64ToI32(
                                    howMany ));
 
 delete[] buffer;
@@ -103,9 +103,9 @@ cBuf.appendStr( in );
 
 
 
-void FileIO::appendChars( const char* pStr )
+void FileIO::appendCharPt( const char* pStr )
 {
-cBuf.appendChars( pStr );
+cBuf.appendCharPt( pStr );
 }
 
 

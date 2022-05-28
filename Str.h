@@ -12,6 +12,7 @@
 
 
 #include "BasicTypes.h"
+#include "CharArray.h"
 
 
 
@@ -23,7 +24,7 @@ class Str
 
   public:
   Str( const char* pStr );
-  Str( char ar[], const Int32 howMany );
+  Str( const CharArray cArray, const Int32 howMany );
   Str( const Str& in );
   Str( const Str& in1, const Str& in2 );
   Str( Int64 n );
@@ -42,10 +43,6 @@ class Str
     return cArray[where];
     }
 
-
-
-  // void print();
-  // void printLine();
   static Int32 charsLength( const char* pStr );
   void reverse( void );
 

@@ -12,10 +12,7 @@
 #pragma once
 
 
-// Basic type definitions.
-// This file is #included in just about every
-// file I write.
 
-// Make it for either Windows or Linux.
-#include "BasicTypesWin.h"
-// #include "BasicTypesLinux.h"
+#include "../WinApi/TimeApiWin.h"
+// #include "../LinuxApi/TimeApiLinux.h"
+

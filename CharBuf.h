@@ -15,6 +15,7 @@
 
 
 #include "BasicTypes.h"
+#include "CharArray.h"
 #include "Str.h"
 #include "RangeC.h"
 
@@ -25,8 +26,7 @@ class CharBuf
   {
   private:
   Int32 testForCopy = 123;
-  char* cArray;
-  Int32 arraySize = 0;
+  CharArray cArray;
   Int32 last = 0;
   void increaseSize( Int32 howMuch );
 
@@ -34,6 +34,7 @@ class CharBuf
   CharBuf( void );
   CharBuf( const CharBuf &in );
   ~CharBuf( void );
+  void setSize( Int32 howBig );
 
   inline Int32 getLast( void ) const
     {
@@ -50,25 +51,23 @@ class CharBuf
   // of the buffer being pointed to.
   const char* getBufPoint( void ) const
     {
-    return cArray;
+    return cArray.getBufPoint( 0 );
     }
 
   void appendChar( const char toSet );
-  void appendChars( const char* pStr );
-  void appendCharBuf( const char* buf,
-                      const Int32 howMany );
+  void appendCharPt( const char* pStr );
+  void appendCharArray( const char* buf,
+                        const Int32 howMany );
+  void appendCharBuf( const CharBuf& charBuf );
 
   void appendStr( const Str& in );
   Str getStr( void ) const;
   inline char valAt( const Int32 where ) const
     {
-    RangeC::test2( where, 0, arraySize - 1,
-             "CharBuf.valAt() arraySize." );
-
     RangeC::test2( where, 0, last - 1,
              "CharBuf.valAt() last." );
 
-    return cArray[where];
+    return cArray.getC( where );
     }
 
   };

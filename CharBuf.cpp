@@ -17,16 +17,12 @@
 
 CharBuf::CharBuf( void )
 {
-arraySize = 1024 * 2;
-cArray = new char[Casting::i32ToU64( arraySize )];
 }
 
 
 
 CharBuf::CharBuf( const CharBuf& in )
 {
-cArray = new char[Casting::i32ToU64( arraySize )];
-
 // Make the compiler think the in value is
 // being used.
 if( in.testForCopy == 123 )
@@ -43,29 +39,19 @@ throw showS;
 
 CharBuf::~CharBuf( void )
 {
-delete[] cArray;
 }
 
 
 
+void CharBuf::setSize( const Int32 howBig )
+{
+cArray.setSize( howBig );
+}
+
+
 void CharBuf::increaseSize( const Int32 howMuch )
 {
-arraySize = arraySize + howMuch;
-char* tempArray = new char[Casting::i32ToU64(
-                                 arraySize )];
-
-const Int32 max = last;
-
-for( Int32 count = 0; count < max; count++ )
-  tempArray[count] = cArray[count];
-
-delete[] cArray;
-cArray = new char[Casting::i32ToU64( arraySize )];
-
-for( Int32 count = 0; count < max; count++ )
-  cArray[count] = tempArray[count];
-
-delete[] tempArray;
+cArray.increaseSize( howMuch );
 }
 
 
@@ -81,16 +67,16 @@ return result;
 
 void CharBuf::appendChar( const char toSet )
 {
-if( (last + 2) <= arraySize )
+if( (last + 2) <= cArray.getSize() )
   increaseSize( (1024 * 16) );
 
-cArray[last] = toSet;
+cArray.setC( last, toSet );
 last++;
 }
 
 
 
-void CharBuf::appendChars( const char* pStr )
+void CharBuf::appendCharPt( const char* pStr )
 {
 const char* sizePoint = pStr;
 Int32 strSize = 0;
@@ -104,12 +90,14 @@ for( Int32 count = 0; count < 10000; count++ )
   strSize++;
   }
 
-if( (arraySize + strSize + 2) <= arraySize )
+// Need the size before I increase it, or not.
+if( (last + strSize + 2) >= cArray.getSize() )
   increaseSize( strSize + (1024 * 16) );
 
+// Now it is big enough.
 for( Int32 count = 0; count < strSize; count++ )
   {
-  cArray[last] = *pStr;
+  cArray.setC( last, *pStr );
   last++;
   pStr++;
   }
@@ -117,17 +105,32 @@ for( Int32 count = 0; count < strSize; count++ )
 
 
 
-void CharBuf::appendCharBuf( const char* buf,
-                             const Int32 howMany )
+void CharBuf::appendCharArray( const char* buf,
+                               const Int32 howMany )
 {
-if( (arraySize + howMany + 2) <= arraySize )
+if( (last + howMany + 2) >= cArray.getSize() )
   increaseSize( howMany + (1024 * 16) );
 
 for( Int32 count = 0; count < howMany; count++ )
   {
-  cArray[last] = *buf;
+  cArray.setC( last, *buf );
   last++;
   buf++;
+  }
+}
+
+
+void CharBuf::appendCharBuf( const CharBuf& charBuf )
+{
+const Int32 howMany = charBuf.getLast();
+
+if( (last + howMany + 2) >= cArray.getSize() )
+  increaseSize( howMany + (1024 * 16) );
+
+for( Int32 count = 0; count < howMany; count++ )
+  {
+  cArray.setC( last, charBuf.valAt( count ));
+  last++;
   }
 }
 
@@ -135,63 +138,13 @@ for( Int32 count = 0; count < howMany; count++ )
 
 void CharBuf::appendStr( const Str& in )
 {
-Int32 howMany = in.getSize();
-if( ((last + 2) + howMany) <= arraySize )
+const Int32 howMany = in.getSize();
+if( ((last + 2) + howMany) >= cArray.getSize() )
   increaseSize( howMany + (1024 * 16) );
 
 for( Int32 count = 0; count < howMany; count++ )
   {
-  cArray[last] = in.charAt( count );
+  cArray.setC( last, in.charAt( count ));
   last++;
   }
 }
-
-
-
-
-/*
-
-void Int8Array::reverse( void )
-{
-const Int32 max = last;
-
-Int8* tempA = new Int8[CastE::i32ToU64( max )];
-Int32 where = 0;
-for( Int32 count = max - 1; count >= 0; count-- )
-  {
-  tempA[where] = cArray[count];
-  where++;
-  }
-
-for( Int32 count = 0; count < max; count++ )
-  cArray[count] = tempA[count];
-
-delete[] tempA;
-}
-
-
-
-bool Int8Array::isAllZero( void ) const
-{
-const Int32 max = last;
-
-for( Int32 count = 0; count < max; count++ )
-  {
-  if( cArray[count] != 0 )
-    return false;
-
-  }
-
-return true;
-}
-
-
-
-// Use getStr()
-Str Int8Array::makeStr( void )
-{
-Str result( cArray, last );
-return result;
-}
-
-*/

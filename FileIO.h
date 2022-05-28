@@ -30,9 +30,8 @@ class FileIO
   void readAll( const char* fileName );
   void writeAll( const char* fileName );
   void appendStr( const Str& in );
-  void appendChars( const char* pStr );
+  void appendCharPt( const char* pStr );
   static bool exists( const char* fileName );
   void appendCharBuf( const CharBuf& buf );
 
   };
-

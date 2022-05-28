@@ -45,7 +45,8 @@ for( Int32 count = 0; count < arraySize;
 }
 
 
-Str::Str( char ar[], const Int32 howMany )
+Str::Str( const CharArray charArray,
+          const Int32 howMany )
 {
 arraySize = howMany;
 if( arraySize == 0 )
@@ -55,9 +56,8 @@ if( arraySize == 0 )
   }
 
 cArray = new char[Casting::i32ToU64( arraySize )];
-for( Int32 count = 0; count < arraySize;
-                                        count++ )
-  cArray[count] = ar[count];
+for( Int32 count = 0; count < arraySize; count++ )
+  cArray[count] = charArray.getC( count );
 
 }
 
