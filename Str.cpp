@@ -15,9 +15,25 @@
 
 Str::Str( const char* pStr )
 {
+if( pStr == nullptr )
+  {
+  cArray.setSize( 1 );
+  cArray.setC( 0, 0 );
+  return;
+  }
+
+if( *pStr == 0 )
+  {
+  cArray.setSize( 1 );
+  cArray.setC( 0, 0 );
+  return;
+  }
+
 const char* sizePoint = pStr;
 
-arraySize = 0;
+Int32 strSize = 0;
+// Make it a reasonable size so it doesn't
+// go forever if it never finds zero.
 for( Int32 count = 0; count < 10000; count++ )
   {
   char c = *sizePoint;
@@ -25,39 +41,49 @@ for( Int32 count = 0; count < 10000; count++ )
     break;
 
   sizePoint++;
-  arraySize++;
+  strSize++;
   }
 
-if( arraySize == 0 )
-  {
-  cArray = new char[1];
-  return;
-  }
-
-cArray = new char[Casting::i32ToU64( arraySize )];
-for( Int32 count = 0; count < arraySize;
-                                       count++ )
+cArray.setSize( strSize );
+const Int32 max = strSize;
+for( Int32 count = 0; count < max; count++ )
   {
   char c = *pStr;
-  cArray[count] = c;
+  cArray.setC( count, c );
   pStr++;
   }
 }
 
 
-Str::Str( const CharArray charArray,
+
+Str::Str( const CharArray& charArray,
           const Int32 howMany )
 {
-arraySize = howMany;
-if( arraySize == 0 )
+if( howMany < 1 )
   {
-  cArray = new char[1];
+  cArray.setSize( 1 );
+  cArray.setC( 0, 0 );
   return;
   }
 
-cArray = new char[Casting::i32ToU64( arraySize )];
-for( Int32 count = 0; count < arraySize; count++ )
-  cArray[count] = charArray.getC( count );
+Int32 maxLength = howMany;
+Int32 zeroAt = cArray.getFirstChar( Casting::
+                                i32ToChar( 0 ));
+if( zeroAt <= 0 )
+  {
+  cArray.setSize( 1 );
+  cArray.setC( 0, 0 );
+  return;
+  }
+
+if( zeroAt < maxLength )
+  maxLength = zeroAt;
+
+cArray.setSize( maxLength );
+
+const Int32 max = maxLength;
+for( Int32 count = 0; count < max; count++ )
+  cArray.setC( count, charArray.getC( count ));
 
 }
 
@@ -65,46 +91,37 @@ for( Int32 count = 0; count < arraySize; count++ )
 
 Str::Str( const Str& in )
 {
-arraySize = in.arraySize;
-if( arraySize == 0 )
-  {
-  cArray = new char[1];
-  return;
-  }
+const Int32 howMany = in.getSize();
+cArray.setSize( howMany );
 
-cArray = new char[Casting::i32ToU64( arraySize )];
-for( Int32 count = 0; count < arraySize; count++ )
-  cArray[count] = in.cArray[count];
+for( Int32 count = 0; count < howMany; count++ )
+  cArray.setC( count, in.charAt( count ));
 
 }
 
 
+/*
 Str::Str( const Str& in1, const Str& in2 )
 {
-arraySize = in1.arraySize + in2.arraySize;
-if( arraySize == 0 )
-  {
-  cArray = new char[1];
-  return;
-  }
+cArray.setSize( = in1.getSize() + in2.getSize() );
 
-cArray = new char[Casting::i32ToU64( arraySize )];
 
 Int32 last = 0;
 for( Int32 count = 0; count < in1.arraySize;
                                      count++ )
   {
-  cArray[last] = in1.cArray[count];
+  cArray.setC( last, in1.charAt( count ));
   last++;
   }
 
 for( Int32 count = 0; count < in2.arraySize;
                                      count++ )
   {
-  cArray[last] = in2.cArray[count];
+  cArray.setC( last, in2.charAt( count ));
   last++;
   }
 }
+*/
 
 
 
@@ -112,10 +129,8 @@ Str::Str( Int64 n )
 {
 if( n == 0 )
   {
-  arraySize = 1;
-  cArray = new char[Casting::i32ToU64(
-                                  arraySize )];
-  cArray[0] = '0';
+  cArray.setSize( 1 );
+  cArray.setC( 0, '0' );
   return;
   }
 
@@ -147,66 +162,36 @@ if( isNegative )
   last++;
   }
 
-arraySize = last;
-cArray = new char[Casting::i32ToU64( arraySize )];
+cArray.setSize( last );
 
 // Reverse it.
 Int32 where = 0;
 for( Int32 count = last - 1; count >= 0;
                                        count-- )
   {
-  cArray[where] = tempBuf[count];
+  cArray.setC( where, tempBuf[count] );
   where++;
   }
 }
 
 
 
-Str::~Str( void )
-{
-delete[] cArray;
-}
-
-
 void Str::copy( const Str& in )
 {
-delete[] cArray;
-
-arraySize = in.arraySize;
-
-if( arraySize == 0 )
-  {
-  cArray = new char[1];
-  return;
-  }
-
-cArray = new char[Casting::i32ToU64( arraySize )];
-for( Int32 count = 0; count < arraySize; count++ )
-  cArray[count] = in.cArray[count];
-
+const Int32 max = in.getSize();
+cArray.copy( in.cArray, max );
 }
 
 
-
-
-/*
-void Str::printLine()
+void Str::append( const Str& in )
 {
-if( arraySize == 0 )
-  {
-  StIO::putC( '\n' );
-  return;
-  }
+const Int32 max = in.getSize();
 
-for( Uint32 count = 0; count < arraySize; count++ )
-  StIO::putC( cArray[count] );
-
-StIO::putC( '\n' );
+cArray.copy( in.cArray, max );
 }
-*/
 
 
-
+// static
 Int32 Str::charsLength( const char* pStr )
 {
 const char* sizePoint = pStr;
@@ -226,26 +211,26 @@ return howMany;
 }
 
 
-// Surely there is a better algorithm than this for reversing
-// a string.
+// Surely there is a better algorithm than this
+// for reversing a string.
+
 
 void Str::reverse( void )
 {
-
+const Int32 max = cArray.getSize();
 char* tempBuf = new char[Casting::i32ToU64(
-                                 arraySize )];
+                                        max )];
 
 // Reverse it.
 Int32 where = 0;
-for( Int32 count = arraySize - 1;
-                              count >= 0; count-- )
+for( Int32 count = max - 1; count >= 0; count-- )
   {
-  tempBuf[where] = cArray[count];
+  tempBuf[where] = cArray.getC( count );
   where++;
   }
 
-for( Int32 count = 0; count < arraySize; count++ )
-  cArray[count] = tempBuf[count];
+for( Int32 count = 0; count < max; count++ )
+  cArray.setC( count, tempBuf[count] );
 
 delete[] tempBuf;
 }

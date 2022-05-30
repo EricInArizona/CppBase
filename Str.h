@@ -16,31 +16,66 @@
 
 
 
+// Str.isEqual( "a quoted string" )
+
+// append a quoted string.
+
+// Other things I want to do with strings.
+
+
 class Str
   {
   private:
-  Int32 arraySize = 0;
-  char* cArray;
+  CharArray cArray;
+  char* copyBuffer = nullptr;
 
   public:
   Str( const char* pStr );
-  Str( const CharArray cArray, const Int32 howMany );
   Str( const Str& in );
-  Str( const Str& in1, const Str& in2 );
+  Str( const CharArray& charArray,
+       const Int32 howMany );
+
   Str( Int64 n );
-  ~Str( void );
+  inline ~Str( void )
+    {
+    // cArray goes out of scope.
+
+    if( copyBuffer != nullptr )
+      delete[] copyBuffer;
+
+    }
+
+
+  inline const char* getCopyBufferPoint( void )
+    {
+    if( copyBuffer != nullptr )
+      delete[] copyBuffer;
+
+    const Int32 max = getSize();
+    copyBuffer = new char[
+                Casting::i32ToU64( max + 1 )];
+
+    for( Int32 count = 0; count < max; count++ )
+      copyBuffer[count] = charAt( count );
+
+    // It has to have that zero, or really
+    // bad things happen.
+    copyBuffer[max] = 0;
+
+    return copyBuffer;
+    }
+
   inline Int32 getSize() const
     {
-    return arraySize;
+    return cArray.getSize();
     }
 
   void copy( const Str& in );
+  void append( const Str& in );
+
   inline char charAt( const Int32 where ) const
     {
-    if( where >= arraySize )
-      throw "In charAt() index out of bounds.";
-
-    return cArray[where];
+    return cArray.getC( where );
     }
 
   static Int32 charsLength( const char* pStr );

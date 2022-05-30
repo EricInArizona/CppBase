@@ -25,17 +25,21 @@ class RangeC
 
   public:
 
-  inline static void testEmpty( void )
-    {
-    // This is marked as an inline function.
-    // An empty inlined function ought to
-    // be optimized away completely.
-    }
+  // I want to be able to comment out the range
+  // checking without it warning me that I have
+  // unused parameters.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-parameter"
 
   inline static void test2( Int64 toTest,
                            Int64 min, Int64 max,
                            const char* showIt )
     {
+    // This is marked as an inline function.
+    // An empty inlined function ought to
+    // be optimized away completely if there
+    // is nothing in it.
+
     if( toTest < min )
       throw showIt;
 
@@ -44,4 +48,8 @@ class RangeC
 
     }
 
+#pragma clang diagnostic pop
+
   };
+
+
