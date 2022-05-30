@@ -8,57 +8,53 @@
 
 
 
-
 #include "FileIO.h"
-#include <iostream>
-#include <fstream>
 #include "StIO.h"
 #include "Casting.h"
 
+// Put these standard files last so that macros
+// get defined as late as possible.
+
+#include <iostream>
+#include <fstream>
 
 
-FileIO::FileIO( void )
+void FileIO::writeCharBuf( const char* fileName,
+                           const CharBuf& cBuf )
 {
-}
+const Int32 howMany = cBuf.getLast();
 
+CharArray cArray;
+cBuf.copyToCharArray( cArray );
 
-FileIO::FileIO( const FileIO &in )
-{
-// Make the compiler think in is being used.
-if( in.testForCopy == 7 )
-  return;
+char* buffer = new char[Casting::i64ToU64(
+                                  howMany)];
 
-// Don't copy a giant buffer.
-const char* showS = "The FileIO copy constructor"
-         " should not be getting called.\n";
-throw showS;
-}
-
-
-
-FileIO::~FileIO( void )
-{
-}
-
-
-void FileIO::writeAll( const char* fileName )
-{
-Int32 howMany = cBuf.getLast();
-const char* buffer = cBuf.getBufPoint();
+cArray.copyToCharPt( buffer, howMany );
 
 std::ofstream outFile( fileName,
                        std::ofstream::binary );
 
-outFile.write( buffer, howMany );
+outFile.write( buffer,
+               howMany );
+
+// good() returns true if none of the error
+// bits get set.
+// End of file flag?
+
+// outFile.good();
+
 outFile.close();
+delete[] buffer;
 }
 
 
 
-void FileIO::readAll( const char* fileName )
+void FileIO::readAll( const char* fileName,
+                      CharBuf& cBuf )
 {
 std::ifstream inFile( fileName,
-                      std::ifstream::binary );
+                        std::ifstream::binary );
 
 inFile.seekg( 0, inFile.end );
 Int64 howMany = inFile.tellg();
@@ -76,11 +72,14 @@ char* buffer = new char[Casting::i64ToU64(
                                      howMany )];
 inFile.read( buffer, howMany );
 
-cBuf.appendCharArray( buffer, Casting::i64ToI32(
-                                   howMany ));
+CharArray cArray;
+cArray.copyFromCharPt( buffer,
+                       Casting::i64ToI32(
+                              howMany ));
+cBuf.appendCharArray( cArray, cArray.getSize());
 
-delete[] buffer;
 inFile.close();
+delete[] buffer;
 }
 
 
@@ -91,28 +90,4 @@ std::ifstream inFile( fileName,
                       std::ifstream::binary );
 
 return inFile.good();
-}
-
-
-
-void FileIO::appendStr( const Str& in )
-{
-cBuf.appendStr( in );
-}
-
-
-
-
-void FileIO::appendCharPt( const char* pStr )
-{
-cBuf.appendCharPt( pStr );
-}
-
-
-void FileIO::appendCharBuf( const CharBuf& buf )
-{
-const Int32 last = buf.getLast();
-for( Int32 count = 0; count < last; count++ )
-  cBuf.appendChar( buf.valAt( count ));
-
 }

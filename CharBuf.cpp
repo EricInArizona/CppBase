@@ -58,7 +58,12 @@ cArray.increaseSize( howMuch );
 
 Str CharBuf::getStr( void ) const
 {
+if( last == 0 )
+  return Str( "" );
+
+// This will stop at a zero character.
 Str result( cArray, last );
+
 // It will do the copy constructor.
 return result;
 }
@@ -105,17 +110,22 @@ for( Int32 count = 0; count < strSize; count++ )
 
 
 
-void CharBuf::appendCharArray( const char* buf,
-                               const Int32 howMany )
+void CharBuf::appendCharArray(
+                       const CharArray& toAdd,
+                       const Int32 howMany )
 {
+if( ( Casting::i32ToU64( cArray.getSize() ) +
+      Casting::i32ToU64( howMany ) ) >=
+      0x7FFFFFFF )
+ throw "CharBuf.appendCharArray too big.";
+
 if( (last + howMany + 2) >= cArray.getSize() )
-  increaseSize( howMany + (1024 * 16) );
+  increaseSize( howMany + (1024 * 1) );
 
 for( Int32 count = 0; count < howMany; count++ )
   {
-  cArray.setC( last, *buf );
+  cArray.setC( last, toAdd.getC( count ) );
   last++;
-  buf++;
   }
 }
 

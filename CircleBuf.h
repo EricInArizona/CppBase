@@ -9,8 +9,10 @@
 
 
 
+/*
 
 #pragma once
+
 
 
 
@@ -57,7 +59,7 @@ class CircleBuf
   bool appendChar( const char toSet );
   bool appendCharPt( const char* pStr );
 
-/*
+
 ====
 Don't be giving out pointers.
 Do a send buffer like
@@ -77,15 +79,19 @@ copy the CharArray.
       return last - first;
 =====
     }
-*/
 
-/*
+
+
   inline char getC( const Int32 where ) const
     {
 
 between first ane last or what?
     return cArray.getC( where );
     }
-*/
+
 
   };
+
+*/
+
+

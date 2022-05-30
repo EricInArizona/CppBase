@@ -21,17 +21,12 @@
 class FileIO
   {
   private:
-  CharBuf cBuf;
-  Int32 testForCopy = 123;
+
   public:
-  FileIO( void );
-  FileIO( const FileIO &in );
-  ~FileIO( void );
-  void readAll( const char* fileName );
-  void writeAll( const char* fileName );
-  void appendStr( const Str& in );
-  void appendCharPt( const char* pStr );
   static bool exists( const char* fileName );
-  void appendCharBuf( const CharBuf& buf );
+  static void writeCharBuf( const char* fileName,
+                            const CharBuf& cBuf );
+  static void readAll( const char* fileName,
+                       CharBuf& cBuf );
 
   };

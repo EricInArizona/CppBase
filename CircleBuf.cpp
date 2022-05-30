@@ -8,7 +8,7 @@
 // https://www.gnu.org/licenses/gpl-3.0.html
 
 
-
+/*
 #include "CircleBuf.h"
 #include "StIO.h"
 #include "Casting.h"
@@ -90,3 +90,5 @@ for( Int32 count = 0; count < strSize; count++ )
 
 return true;
 }
+
+*/

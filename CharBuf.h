@@ -46,27 +46,23 @@ class CharBuf
     last = 0;
     }
 
-  // This is used with getLast() like in
-  // FileIO.writeAll() to pass the right size
-  // of the buffer being pointed to.
-  const char* getBufPoint( void ) const
-    {
-    return cArray.getBufPoint( 0 );
-    }
-
   void appendChar( const char toSet );
   void appendCharPt( const char* pStr );
-  void appendCharArray( const char* buf,
+  void appendCharArray( const CharArray& toAdd,
                         const Int32 howMany );
+
+  inline void copyToCharArray( CharArray& copyTo )
+                                          const
+    {
+    copyTo.copy( cArray, last );
+    }
+
   void appendCharBuf( const CharBuf& charBuf );
 
   void appendStr( const Str& in );
   Str getStr( void ) const;
   inline char valAt( const Int32 where ) const
     {
-    RangeC::test2( where, 0, last - 1,
-             "CharBuf.valAt() last." );
-
     return cArray.getC( where );
     }
 
