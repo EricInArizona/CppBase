@@ -1,5 +1,4 @@
 // Copyright Eric Chauvin 2022
-// This copyright notice has to stay at the top.
 
 
 // This is licensed under the GNU General
@@ -14,47 +13,63 @@
 
 #include "BasicTypes.h"
 #include "RangeC.h"
+#include "Casting.h"
 
 
 class Int32Array
   {
   private:
   Int32 testForCopy = 123;
-  Int32 arraySize = 0;
-  Int32 lastAppend = 0;
+  Int32 arraySize = 1;
   Int32* iArray;
 
-  void increaseAppendSize( const Int32 howMuch );
-
   public:
-  Int32Array( void );
-  Int32Array( const Int32Array& obj );
-  ~Int32Array( void );
-  void setSize( const Int32 howBig );
-  void appendVal( const Int32 toSet );
+  inline Int32Array( void )
+    {
+    arraySize = 1;
+    iArray = new Int32[
+                  Casting::i32ToU64( arraySize )];
+    }
+
+
+  inline Int32Array( const Int32Array& in )
+    {
+    arraySize = 1;
+    iArray = new Int32[
+               Casting::i32ToU64( arraySize )];
+
+    // Make the compiler think in is being used.
+    if( in.testForCopy == 7 )
+      return;
+
+    throw "Int32Array copy constructor.";
+    }
+
+
+  inline ~Int32Array( void )
+    {
+    delete[] iArray;
+    }
+
+  inline void setSize( const Int32 howBig )
+    {
+    if( howBig == arraySize )
+      return;
+
+    arraySize = howBig;
+    delete[] iArray;
+    iArray = new Int32[
+                 Casting::i32ToU64( arraySize )];
+    }
+
 
   inline Int32 getArraySize( void ) const
     {
     return arraySize;
     }
 
-
-  inline Int32 getLastAppend( void ) const
-    {
-    return lastAppend;
-    }
-
-  inline void clearLastAppend( void )
-    {
-    lastAppend = 0;
-    }
-
   inline Int32 getVal( const Int32 where ) const
     {
-    // This might not be using lastAppend.
-    // It might not be using appendVal().
-    // So don't test here for that range.
-
     RangeC::test2( where, 0, arraySize - 1,
       "Int32Array.getVal arraySize range." );
 
@@ -71,6 +86,14 @@ class Int32Array
     }
 
 
-  void copy( const Int32Array& in );
+  inline void copy( const Int32Array& in )
+    {
+    setSize( in.arraySize );
+
+    const Int32 max = arraySize;
+    for( Int32 count = 0; count < max; count++ )
+      iArray[count] = in.iArray[count];
+
+    }
 
   };

@@ -15,11 +15,9 @@
 
 
 void Randomish::makeRandomBytes(
-                            Uint16Buf& uBuf,
+                            Uint16Array& uArray,
                             const Int32 howMany )
 {
-uBuf.clear();
-
 std::random_device rd;
 
 // rd.entropy()
@@ -35,7 +33,7 @@ std::mt19937 gen( rd() );
 //std::uniform_int_distribution<> dist( 1,
 //                               0xFFFFFFFF );
 
-Int32 gotCount = 0;
+Int32 where = 0;
 for( Int32 count = 0; count < 100000; count++ )
   {
   // dist( gen())
@@ -43,12 +41,14 @@ for( Int32 count = 0; count < 100000; count++ )
   // Truncate the unsigned int to an 8 bit byte.
   Uint16 c = Casting::
                 U64ToU16ByteTruncate( gen());
+
+  // Use non zero bytes.
   if( c == 0 )
     continue;
 
-  uBuf.appendVal( c );
-  gotCount++;
-  if( gotCount >= howMany )
+  uArray.setVal( where, c );
+  where++;
+  if( where >= howMany )
     return;
 
   }

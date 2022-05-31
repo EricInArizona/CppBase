@@ -13,8 +13,9 @@
 
 
 // This is supposed to be cryptographically
-// random, but this is not.  It is random enough
+// random.  It is random enough for now
 // to test an algorithm.
+
 // I'm not writing a long and in-depth book
 // on randomness just yet.  I'll do that when
 // I have a few years to set aside for that
@@ -28,7 +29,7 @@
 
 
 #include "BasicTypes.h"
-#include "Uint16Buf.h"
+#include "Uint16Array.h"
 
 
 class Randomish
@@ -36,7 +37,7 @@ class Randomish
   private:
 
   public:
-  static void makeRandomBytes( Uint16Buf& uBuf,
-                           const Int32 howMany );
+  static void makeRandomBytes( Uint16Array& uArray,
+                             const Int32 howMany );
 
   };
