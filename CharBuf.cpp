@@ -17,6 +17,7 @@
 
 CharBuf::CharBuf( void )
 {
+setSize( 16 );
 }
 
 
@@ -25,7 +26,7 @@ CharBuf::CharBuf( const CharBuf& in )
 {
 // Make the compiler think the in value is
 // being used.
-if( in.testForCopy == 123 )
+if( in.testForCopy == 789 )
   return;
 
 // Don't copy a giant buffer.
@@ -45,6 +46,7 @@ CharBuf::~CharBuf( void )
 
 void CharBuf::setSize( const Int32 howBig )
 {
+last = 0;
 cArray.setSize( howBig );
 }
 
@@ -56,56 +58,15 @@ cArray.increaseSize( howMuch );
 
 
 
-Str CharBuf::getStr( void ) const
-{
-if( last == 0 )
-  return Str( "" );
-
-// This will stop at a zero character.
-Str result( cArray, last );
-
-// It will do the copy constructor.
-return result;
-}
-
-
-
 void CharBuf::appendChar( const char toSet )
 {
-if( (last + 2) <= cArray.getSize() )
-  increaseSize( (1024 * 16) );
+// It's good if you can set the size ahead
+// of time.
+if( (last + 1) <= cArray.getSize() )
+  increaseSize( appendIncrease );
 
 cArray.setC( last, toSet );
 last++;
-}
-
-
-
-void CharBuf::appendCharPt( const char* pStr )
-{
-const char* sizePoint = pStr;
-Int32 strSize = 0;
-for( Int32 count = 0; count < 10000; count++ )
-  {
-  char c = *sizePoint;
-  if( c == 0 )
-    break;
-
-  sizePoint++;
-  strSize++;
-  }
-
-// Need the size before I increase it, or not.
-if( (last + strSize + 2) >= cArray.getSize() )
-  increaseSize( strSize + (1024 * 16) );
-
-// Now it is big enough.
-for( Int32 count = 0; count < strSize; count++ )
-  {
-  cArray.setC( last, *pStr );
-  last++;
-  pStr++;
-  }
 }
 
 
@@ -139,22 +100,28 @@ if( (last + howMany + 2) >= cArray.getSize() )
 
 for( Int32 count = 0; count < howMany; count++ )
   {
-  cArray.setC( last, charBuf.valAt( count ));
+  cArray.setC( last, charBuf.getC( count ));
   last++;
   }
 }
 
 
 
-void CharBuf::appendStr( const Str& in )
+void CharBuf::copy( const CharBuf& toCopy )
 {
-const Int32 howMany = in.getSize();
-if( ((last + 2) + howMany) >= cArray.getSize() )
-  increaseSize( howMany + (1024 * 16) );
+last = toCopy.last;
+appendIncrease = toCopy.appendIncrease;
 
-for( Int32 count = 0; count < howMany; count++ )
-  {
-  cArray.setC( last, in.charAt( count ));
-  last++;
-  }
+cArray.copy( toCopy.cArray );
+}
+
+
+
+void CharBuf::copyToCharArray( CharArray& copyTo )
+{
+const Int32 max = getLast();
+copyTo.setSize( max );
+for( Int32 count = 0; count < max; count++ )
+  copyTo.setC( count, cArray.getC( count ));
+
 }

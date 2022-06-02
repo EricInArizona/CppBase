@@ -15,19 +15,10 @@
 
 Str::Str( const char* pStr )
 {
-if( pStr == nullptr )
-  {
-  cArray.setSize( 1 );
-  cArray.setC( 0, 0 );
-  return;
-  }
+charBuf.setAppendIncrease( 16 );
 
-if( *pStr == 0 )
-  {
-  cArray.setSize( 1 );
-  cArray.setC( 0, 0 );
+if( pStr == nullptr )
   return;
-  }
 
 const char* sizePoint = pStr;
 
@@ -44,46 +35,24 @@ for( Int32 count = 0; count < 10000; count++ )
   strSize++;
   }
 
-cArray.setSize( strSize );
 const Int32 max = strSize;
 for( Int32 count = 0; count < max; count++ )
   {
   char c = *pStr;
-  cArray.setC( count, c );
+  charBuf.appendChar( c );
   pStr++;
   }
 }
 
 
-
-Str::Str( const CharArray& charArray,
-          const Int32 howMany )
+Str::Str( const CharArray& cArray )
 {
-if( howMany < 1 )
-  {
-  cArray.setSize( 1 );
-  cArray.setC( 0, 0 );
-  return;
-  }
+charBuf.setAppendIncrease( 16 );
+const Int32 max = cArray.getSize();
+charBuf.setSize( max + 2 );
 
-Int32 maxLength = howMany;
-Int32 zeroAt = cArray.getFirstChar( Casting::
-                                i32ToChar( 0 ));
-if( zeroAt <= 0 )
-  {
-  cArray.setSize( 1 );
-  cArray.setC( 0, 0 );
-  return;
-  }
-
-if( zeroAt < maxLength )
-  maxLength = zeroAt;
-
-cArray.setSize( maxLength );
-
-const Int32 max = maxLength;
 for( Int32 count = 0; count < max; count++ )
-  cArray.setC( count, charArray.getC( count ));
+  charBuf.appendChar( cArray.getC( count ));
 
 }
 
@@ -91,11 +60,12 @@ for( Int32 count = 0; count < max; count++ )
 
 Str::Str( const Str& in )
 {
-const Int32 howMany = in.getSize();
-cArray.setSize( howMany );
+charBuf.setAppendIncrease( 16 );
+const Int32 howMany = in.getLast();
+charBuf.setSize( howMany );
 
 for( Int32 count = 0; count < howMany; count++ )
-  cArray.setC( count, in.charAt( count ));
+  charBuf.appendChar( in.getC( count ));
 
 }
 
@@ -103,6 +73,7 @@ for( Int32 count = 0; count < howMany; count++ )
 /*
 Str::Str( const Str& in1, const Str& in2 )
 {
+charBuf.setAppendIncrease( 16 );
 cArray.setSize( = in1.getSize() + in2.getSize() );
 
 
@@ -127,10 +98,11 @@ for( Int32 count = 0; count < in2.arraySize;
 
 Str::Str( Int64 n )
 {
+charBuf.setAppendIncrease( 16 );
+
 if( n == 0 )
   {
-  cArray.setSize( 1 );
-  cArray.setC( 0, '0' );
+  charBuf.appendChar( '0' );
   return;
   }
 
@@ -162,15 +134,13 @@ if( isNegative )
   last++;
   }
 
-cArray.setSize( last );
+charBuf.setSize( last );
 
 // Reverse it.
-Int32 where = 0;
 for( Int32 count = last - 1; count >= 0;
                                        count-- )
   {
-  cArray.setC( where, tempBuf[count] );
-  where++;
+  charBuf.appendChar( tempBuf[count] );
   }
 }
 
@@ -178,37 +148,20 @@ for( Int32 count = last - 1; count >= 0;
 
 void Str::copy( const Str& in )
 {
-const Int32 max = in.getSize();
-cArray.copy( in.cArray, max );
+charBuf.copy( in.charBuf );
 }
+
 
 
 void Str::append( const Str& in )
 {
-const Int32 max = in.getSize();
+const Int32 max = in.getLast();
 
-cArray.copy( in.cArray, max );
+for( Int32 count = 0; count < max; count++ )
+  charBuf.appendChar( in.charBuf.getC( count ));
+
 }
 
-
-// static
-Int32 Str::charsLength( const char* pStr )
-{
-const char* sizePoint = pStr;
-
-Int32 howMany = 0;
-for( Int32 count = 0; count < 10000; count++ )
-  {
-  char c = *sizePoint;
-  if( c == 0 )
-    break;
-
-  sizePoint++;
-  howMany++;
-  }
-
-return howMany;
-}
 
 
 // Surely there is a better algorithm than this
@@ -217,7 +170,7 @@ return howMany;
 
 void Str::reverse( void )
 {
-const Int32 max = cArray.getSize();
+const Int32 max = charBuf.getLast();
 char* tempBuf = new char[Casting::i32ToU64(
                                         max )];
 
@@ -225,12 +178,44 @@ char* tempBuf = new char[Casting::i32ToU64(
 Int32 where = 0;
 for( Int32 count = max - 1; count >= 0; count-- )
   {
-  tempBuf[where] = cArray.getC( count );
+  tempBuf[where] = charBuf.getC( count );
   where++;
   }
 
+charBuf.clear();
 for( Int32 count = 0; count < max; count++ )
-  cArray.setC( count, tempBuf[count] );
+  charBuf.appendChar( tempBuf[count] );
 
 delete[] tempBuf;
 }
+
+
+
+/*
+void CharBuf::appendCharPt( const char* pStr )
+{
+const char* sizePoint = pStr;
+Int32 strSize = 0;
+for( Int32 count = 0; count < 10000; count++ )
+  {
+  char c = *sizePoint;
+  if( c == 0 )
+    break;
+
+  sizePoint++;
+  strSize++;
+  }
+
+// Need the size before I increase it, or not.
+if( (last + strSize + 2) >= cArray.getSize() )
+  increaseSize( strSize + (1024 * 16) );
+
+// Now it is big enough.
+for( Int32 count = 0; count < strSize; count++ )
+  {
+  cArray.setC( last, *pStr );
+  last++;
+  pStr++;
+  }
+}
+*/

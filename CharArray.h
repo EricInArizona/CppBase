@@ -51,7 +51,7 @@ class CharArray
     cArray = new char[Casting::i32ToU64(
                                 arraySize )];
 
-    if( in.testForCopy == 123 )
+    if( in.testForCopy == 789 )
       return;
 
     const char* showS = "The CharArray copy"
@@ -87,11 +87,17 @@ class CharArray
     return arraySize;
     }
 
-  inline Int32 getFirstChar( const char toFind )
+  inline Int32 findChar( const Int32 start,
+                         const char toFind )
     {
     const Int32 max = arraySize;
+    if( start < 0 )
+      return -1;
 
-    for( Int32 count = 0; count < max; count++ )
+    if( start >= max )
+      return -1;
+
+    for( Int32 count = start; count < max; count++ )
       {
       if( cArray[count] == toFind )
         return count;
@@ -100,76 +106,17 @@ class CharArray
     return -1; // Didn't find it.
     }
 
-  inline void copy( const CharArray& copyFrom,
-                    const Int32 howMany )
+  inline void copy( const CharArray& copyFrom )
     {
     const Int32 fromSize = copyFrom.getSize();
-    if( howMany > fromSize )
-      throw "CharArray.copy fromSize.";
-
-    setSize( howMany );
+    setSize( fromSize );
 
     // Memory::copy()
 
-    for( Int32 count = 0; count < howMany; count++ )
+    for( Int32 count = 0; count < fromSize; count++ )
       cArray[count] = copyFrom.cArray[count];
 
     }
-
-  inline void append( const CharArray& copyFrom,
-                    const Int32 howMany )
-    {
-    const Int32 fromSize = copyFrom.getSize();
-    if( howMany > fromSize )
-      throw "CharArray.append fromSize.";
-
-    Int32 last = arraySize;
-    increaseSize( howMany );
-
-    // Memory::copy()
-
-    for( Int32 count = 0; count < howMany; count++ )
-      {
-      cArray[last] = copyFrom.cArray[count];
-      last++;
-      }
-    }
-
-
-  inline void copyToCharPt( char* pointTo,
-                            const Int32 howMany )
-    {
-    if( arraySize < howMany )
-      throw "CharArray.copyToCharPt howMany.";
-
-    // Memory::copy()
-
-    char* pointChar = pointTo;
-
-    for( Int32 count = 0; count < howMany; count++ )
-      {
-      *pointChar = cArray[count];
-      pointChar++;
-      }
-    }
-
-
-  inline void copyFromCharPt( const char* pointTo,
-                            const Int32 howMany )
-    {
-    // Memory::copy()
-
-    setSize( howMany );
-
-    const char* pointChar = pointTo;
-
-    for( Int32 count = 0; count < howMany; count++ )
-      {
-      cArray[count] = *pointChar;
-      pointChar++;
-      }
-    }
-
 
 
   inline void increaseSize( const Int32 howMuch )

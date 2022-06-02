@@ -12,7 +12,7 @@
 
 
 #include "BasicTypes.h"
-#include "CharArray.h"
+#include "CharBuf.h"
 
 
 
@@ -26,59 +26,37 @@
 class Str
   {
   private:
-  CharArray cArray;
-  char* copyBuffer = nullptr;
+  CharBuf charBuf;
 
   public:
   Str( const char* pStr );
   Str( const Str& in );
-  Str( const CharArray& charArray,
-       const Int32 howMany );
-
+  Str( const CharArray& cArray );
   Str( Int64 n );
   inline ~Str( void )
     {
-    // cArray goes out of scope.
-
-    if( copyBuffer != nullptr )
-      delete[] copyBuffer;
-
+    // charBuf goes out of scope.
     }
 
-
-  inline const char* getCopyBufferPoint( void )
+  inline Int32 getLast( void ) const
     {
-    if( copyBuffer != nullptr )
-      delete[] copyBuffer;
-
-    const Int32 max = getSize();
-    copyBuffer = new char[
-                Casting::i32ToU64( max + 1 )];
-
-    for( Int32 count = 0; count < max; count++ )
-      copyBuffer[count] = charAt( count );
-
-    // It has to have that zero, or really
-    // bad things happen.
-    copyBuffer[max] = 0;
-
-    return copyBuffer;
-    }
-
-  inline Int32 getSize() const
-    {
-    return cArray.getSize();
+    return charBuf.getLast();
     }
 
   void copy( const Str& in );
   void append( const Str& in );
 
-  inline char charAt( const Int32 where ) const
+  inline char getC( const Int32 where ) const
     {
-    return cArray.getC( where );
+    return charBuf.getC( where );
     }
 
-  static Int32 charsLength( const char* pStr );
+  // static Int32 charsLength( const char* pStr );
   void reverse( void );
+
+  inline void clear( void )
+    {
+    charBuf.clear();
+    }
 
   };

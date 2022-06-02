@@ -8,9 +8,7 @@
 
 // In the cpp file:
 // #include <string.h>
-
-
-// memset
+// memset()
 // strlen() finds the length of a C string.
 
 // memcpy( void* dest, const void * source, howmany )
@@ -33,5 +31,36 @@
 class Memory
   {
   private:
+
+  public:
+  static inline void copyMemory( void* dest,
+                            const void* source,
+                            Int32 howMany )
+    {
+    // In strings.h:
+    // memcpy( void* dest, const void * source, howmany )
+    }
+
+
+  static inline Int32 strLength(
+                      const char* pStr )
+{
+// string.h has strlen().
+
+const char* sizePoint = pStr;
+
+Int32 howMany = 0;
+for( Int32 count = 0; count < 10000; count++ )
+  {
+  char c = *sizePoint;
+  if( c == 0 )
+    break;
+
+  sizePoint++;
+  howMany++;
+  }
+
+return howMany;
+}
 
   };

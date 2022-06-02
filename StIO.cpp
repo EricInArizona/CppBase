@@ -10,7 +10,11 @@
 
 
 #include "StIO.h"
+
+
+// Always put these last.
 #include <stdio.h>
+
 // #include <wchar.h>
 // #include <time.h>
 // #include <select.h>
@@ -119,9 +123,21 @@ void StIO::putCharBuf( const CharBuf& charBuf )
 {
 const Int32 max = charBuf.getLast();
 for( Int32 count = 0; count < max; count++ )
-  putchar( charBuf.valAt( count ));
+  putchar( charBuf.getC( count ));
 
 }
+
+
+
+void StIO::putStr( const Str& str )
+{
+const Int32 max = str.getLast();
+for( Int32 count = 0; count < max; count++ )
+  putchar( str.getC( count ));
+
+}
+
+
 
 /*
 In Windows:

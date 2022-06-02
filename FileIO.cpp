@@ -19,18 +19,16 @@
 #include <fstream>
 
 
-void FileIO::writeCharBuf( const char* fileName,
-                           const CharBuf& cBuf )
+void FileIO::writeCharAr( const char* fileName,
+                       const CharArray& cArray )
 {
-const Int32 howMany = cBuf.getLast();
-
-CharArray cArray;
-cBuf.copyToCharArray( cArray );
+const Int32 howMany = cArray.getSize();
 
 char* buffer = new char[Casting::i64ToU64(
                                   howMany)];
 
-cArray.copyToCharPt( buffer, howMany );
+for( Int32 count = 0; count < howMany; count++ )
+  buffer[count] = cArray.getC( count );
 
 std::ofstream outFile( fileName,
                        std::ofstream::binary );
@@ -49,9 +47,8 @@ delete[] buffer;
 }
 
 
-
 void FileIO::readAll( const char* fileName,
-                      CharBuf& cBuf )
+                      CharArray& cArray )
 {
 std::ifstream inFile( fileName,
                         std::ifstream::binary );
@@ -63,8 +60,8 @@ if( howMany < 0 )
   throw "FileIO.readAll() tellg() returned < 0.";
 
 // Don't read files that are this big in to RAM.
-if( howMany > 4000000000LL )
-  throw "Infile tellg() returned > 4000000000.";
+if( howMany > 1000000000LL )
+  throw "Infile tellg() returned > 1000000000.";
 
 inFile.seekg( 0 );
 
@@ -72,11 +69,9 @@ char* buffer = new char[Casting::i64ToU64(
                                      howMany )];
 inFile.read( buffer, howMany );
 
-CharArray cArray;
-cArray.copyFromCharPt( buffer,
-                       Casting::i64ToI32(
-                              howMany ));
-cBuf.appendCharArray( cArray, cArray.getSize());
+cArray.setSize( Casting::i64ToI32( howMany ));
+for( Int32 count = 0; count < howMany; count++ )
+  cArray.setC( count, buffer[count] );
 
 inFile.close();
 delete[] buffer;

@@ -63,7 +63,7 @@ class Int32Array
     }
 
 
-  inline Int32 getArraySize( void ) const
+  inline Int32 getSize( void ) const
     {
     return arraySize;
     }
