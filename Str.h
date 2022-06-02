@@ -13,6 +13,7 @@
 
 #include "BasicTypes.h"
 #include "CharBuf.h"
+#include "OpenCharArray.h"
 
 
 
@@ -35,7 +36,6 @@ class Str
   Str( Int64 n );
   inline ~Str( void )
     {
-    // charBuf goes out of scope.
     }
 
   inline Int32 getLast( void ) const
@@ -51,12 +51,23 @@ class Str
     return charBuf.getC( where );
     }
 
-  // static Int32 charsLength( const char* pStr );
   void reverse( void );
 
   inline void clear( void )
     {
     charBuf.clear();
+    }
+
+  inline void copyToOpenArray(
+                  OpenCharArray& openArray ) const
+    {
+    const Int32 max = charBuf.getLast();
+    openArray.setSize( max + 1 );
+
+    for( Int32 count = 0; count < max; count++ )
+      openArray.setC( count, charBuf.getC( count ));
+
+    openArray.setC( max, 0 );
     }
 
   };

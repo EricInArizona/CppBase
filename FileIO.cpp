@@ -12,6 +12,7 @@
 #include "StIO.h"
 #include "Casting.h"
 
+
 // Put these standard files last so that macros
 // get defined as late as possible.
 
@@ -19,21 +20,24 @@
 #include <fstream>
 
 
-void FileIO::writeCharAr( const char* fileName,
+void FileIO::writeCharAr( const Str& fileName,
                        const CharArray& cArray )
 {
 const Int32 howMany = cArray.getSize();
 
-char* buffer = new char[Casting::i64ToU64(
-                                  howMany)];
+OpenCharArray writeBuffer;
+writeBuffer.setSize( howMany );
 
 for( Int32 count = 0; count < howMany; count++ )
-  buffer[count] = cArray.getC( count );
+  writeBuffer.setC( count, cArray.getC( count ));
 
-std::ofstream outFile( fileName,
+OpenCharArray nameBuffer;
+fileName.copyToOpenArray( nameBuffer );
+
+std::ofstream outFile( nameBuffer.cArray,
                        std::ofstream::binary );
 
-outFile.write( buffer,
+outFile.write( writeBuffer.cArray,
                howMany );
 
 // good() returns true if none of the error
@@ -43,45 +47,60 @@ outFile.write( buffer,
 // outFile.good();
 
 outFile.close();
-delete[] buffer;
+
+// openBuffer goes out of scope.
 }
 
 
-void FileIO::readAll( const char* fileName,
+bool FileIO::readAll( const Str& fileName,
                       CharArray& cArray )
 {
-std::ifstream inFile( fileName,
+OpenCharArray nameBuffer;
+fileName.copyToOpenArray( nameBuffer );
+
+std::ifstream inFile( nameBuffer.cArray,
                         std::ifstream::binary );
 
 inFile.seekg( 0, inFile.end );
 Int64 howMany = inFile.tellg();
 // Error returns -1.
 if( howMany < 0 )
-  throw "FileIO.readAll() tellg() returned < 0.";
+  {
+  StIO::putS( "FileIO.readAll() returned < 0." );
+  return false;
+  }
 
 // Don't read files that are this big in to RAM.
 if( howMany > 1000000000LL )
-  throw "Infile tellg() returned > 1000000000.";
+  {
+  StIO::putS( "FileIO returned > 1000000000." );
+  return false;
+  }
 
 inFile.seekg( 0 );
 
-char* buffer = new char[Casting::i64ToU64(
-                                     howMany )];
-inFile.read( buffer, howMany );
+OpenCharArray readBuffer;
+readBuffer.setSize( Casting::i64ToI32(
+                                   howMany ));
+
+inFile.read( readBuffer.cArray, howMany );
 
 cArray.setSize( Casting::i64ToI32( howMany ));
 for( Int32 count = 0; count < howMany; count++ )
-  cArray.setC( count, buffer[count] );
+  cArray.setC( count, readBuffer.getC( count ));
 
 inFile.close();
-delete[] buffer;
+return true;
 }
 
 
 
-bool FileIO::exists( const char* fileName )
+bool FileIO::exists( const Str& fileName )
 {
-std::ifstream inFile( fileName,
+OpenCharArray nameBuffer;
+fileName.copyToOpenArray( nameBuffer );
+
+std::ifstream inFile( nameBuffer.cArray,
                       std::ifstream::binary );
 
 return inFile.good();
