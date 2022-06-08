@@ -29,11 +29,7 @@ CharBuf::CharBuf( const CharBuf& in )
 if( in.testForCopy == 789 )
   return;
 
-// Don't copy a giant buffer.
-const char* showS = "The CharBuf copy constructor"
-         " should not be getting called.\n";
-
-throw showS;
+throw "CharBuf copy constructor called.";
 }
 
 
@@ -58,12 +54,16 @@ cArray.increaseSize( howMuch );
 
 
 
-void CharBuf::appendChar( const char toSet )
+void CharBuf::appendChar( const char toSet,
+                          const Int32 increase )
 {
+if( increase < 1 )
+  throw "CharBuf.appendChar Increase.";
+
 // It's good if you can set the size ahead
 // of time.
-if( (last + 1) <= cArray.getSize() )
-  increaseSize( appendIncrease );
+if( (last + 1) >= cArray.getSize() )
+  increaseSize( increase );
 
 cArray.setC( last, toSet );
 last++;
@@ -81,7 +81,7 @@ if( ( Casting::i32ToU64( cArray.getSize() ) +
  throw "CharBuf.appendCharArray too big.";
 
 if( (last + howMany + 2) >= cArray.getSize() )
-  increaseSize( howMany + (1024 * 1) );
+  increaseSize( howMany + (1024 * 16) );
 
 for( Int32 count = 0; count < howMany; count++ )
   {
@@ -110,7 +110,6 @@ for( Int32 count = 0; count < howMany; count++ )
 void CharBuf::copy( const CharBuf& toCopy )
 {
 last = toCopy.last;
-appendIncrease = toCopy.appendIncrease;
 
 cArray.copy( toCopy.cArray );
 }
@@ -124,4 +123,34 @@ copyTo.setSize( max );
 for( Int32 count = 0; count < max; count++ )
   copyTo.setC( count, cArray.getC( count ));
 
+}
+
+
+
+void CharBuf::copyToOpenCharArray(
+                     OpenCharArray& copyTo ) const
+{
+const Int32 max = getLast();
+copyTo.setSize( max );
+
+// Memory::copy()  Memory.cpp
+
+for( Int32 count = 0; count < max; count++ )
+  copyTo.setC( count, cArray.getC( count ));
+
+}
+
+
+void CharBuf::copyFromOpenCharArray(
+                 const OpenCharArray& copyFrom )
+{
+const Int32 max = copyFrom.getSize();
+cArray.setSize( max + 1024);
+
+// Memory::copy()  Memory.cpp
+
+for( Int32 count = 0; count < max; count++ )
+  cArray.setC( count, copyFrom.getC( count ));
+
+last = max;
 }

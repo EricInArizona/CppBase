@@ -19,8 +19,6 @@
 
 // Str.isEqual( "a quoted string" )
 
-// append a quoted string.
-
 // Other things I want to do with strings.
 
 
@@ -45,6 +43,7 @@ class Str
 
   void copy( const Str& in );
   void append( const Str& in );
+  void appendCharPt( const char* pStr );
 
   inline char getC( const Int32 where ) const
     {
@@ -67,6 +66,11 @@ class Str
     for( Int32 count = 0; count < max; count++ )
       openArray.setC( count, charBuf.getC( count ));
 
+    // If this was an empty string then this
+    // zero is all it would have in it.
+    // With max at zero.
+
+    // Make sure it has that final zero!
     openArray.setC( max, 0 );
     }
 

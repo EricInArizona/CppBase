@@ -20,16 +20,15 @@
 #include <fstream>
 
 
-void FileIO::writeCharAr( const Str& fileName,
-                       const CharArray& cArray )
+void FileIO::writeCharBuf( const Str& fileName,
+                       const CharBuf& cBuf )
 {
-const Int32 howMany = cArray.getSize();
+try
+{
+const Int32 howMany = cBuf.getLast();
 
-OpenCharArray writeBuffer;
-writeBuffer.setSize( howMany );
-
-for( Int32 count = 0; count < howMany; count++ )
-  writeBuffer.setC( count, cArray.getC( count ));
+OpenCharArray writeAr;
+cBuf.copyToOpenCharArray( writeAr );
 
 OpenCharArray nameBuffer;
 fileName.copyToOpenArray( nameBuffer );
@@ -37,7 +36,7 @@ fileName.copyToOpenArray( nameBuffer );
 std::ofstream outFile( nameBuffer.cArray,
                        std::ofstream::binary );
 
-outFile.write( writeBuffer.cArray,
+outFile.write( writeAr.cArray,
                howMany );
 
 // good() returns true if none of the error
@@ -48,12 +47,24 @@ outFile.write( writeBuffer.cArray,
 
 outFile.close();
 
-// openBuffer goes out of scope.
+// Any OpenCharArray goes out of scope.
+
+}
+catch( ... )
+  {
+  const char* errorS = "FileIO writeCharBuf"
+                " exception.";
+
+  StIO::putS( errorS );
+  }
 }
 
 
+
 bool FileIO::readAll( const Str& fileName,
-                      CharArray& cArray )
+                      CharBuf& cBuf )
+{
+try
 {
 OpenCharArray nameBuffer;
 fileName.copyToOpenArray( nameBuffer );
@@ -79,23 +90,35 @@ if( howMany > 1000000000LL )
 
 inFile.seekg( 0 );
 
-OpenCharArray readBuffer;
-readBuffer.setSize( Casting::i64ToI32(
-                                   howMany ));
+OpenCharArray readAr;
+readAr.setSize( Casting::i64ToI32( howMany ));
 
-inFile.read( readBuffer.cArray, howMany );
+inFile.read( readAr.cArray, howMany );
 
-cArray.setSize( Casting::i64ToI32( howMany ));
+cBuf.setSize( Casting::i64ToI32( howMany + 1024 ));
 for( Int32 count = 0; count < howMany; count++ )
-  cArray.setC( count, readBuffer.getC( count ));
+  cBuf.appendChar( readAr.getC( count ),
+                                  1024 * 32);
 
 inFile.close();
 return true;
+
+}
+catch( ... )
+  {
+  const char* errorS = "FileIO readAll"
+                " exception.";
+
+  StIO::putS( errorS );
+  return false;
+  }
 }
 
 
 
 bool FileIO::exists( const Str& fileName )
+{
+try
 {
 OpenCharArray nameBuffer;
 fileName.copyToOpenArray( nameBuffer );
@@ -104,4 +127,14 @@ std::ifstream inFile( nameBuffer.cArray,
                       std::ifstream::binary );
 
 return inFile.good();
+
+}
+catch( ... )
+  {
+  const char* errorS = "FileIO exists"
+                " exception.";
+
+  StIO::putS( errorS );
+  return false;
+  }
 }

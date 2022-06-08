@@ -15,8 +15,6 @@
 
 Str::Str( const char* pStr )
 {
-charBuf.setAppendIncrease( 16 );
-
 if( pStr == nullptr )
   return;
 
@@ -36,10 +34,12 @@ for( Int32 count = 0; count < 10000; count++ )
   }
 
 const Int32 max = strSize;
+charBuf.setSize( max + 1 );
+
 for( Int32 count = 0; count < max; count++ )
   {
   char c = *pStr;
-  charBuf.appendChar( c );
+  charBuf.appendChar( c, 32 );
   pStr++;
   }
 }
@@ -47,12 +47,11 @@ for( Int32 count = 0; count < max; count++ )
 
 Str::Str( const CharArray& cArray )
 {
-charBuf.setAppendIncrease( 16 );
 const Int32 max = cArray.getSize();
 charBuf.setSize( max + 2 );
 
 for( Int32 count = 0; count < max; count++ )
-  charBuf.appendChar( cArray.getC( count ));
+  charBuf.appendChar( cArray.getC( count ), 32 );
 
 }
 
@@ -60,53 +59,28 @@ for( Int32 count = 0; count < max; count++ )
 
 Str::Str( const Str& in )
 {
-charBuf.setAppendIncrease( 16 );
 const Int32 howMany = in.getLast();
 charBuf.setSize( howMany );
 
 for( Int32 count = 0; count < howMany; count++ )
-  charBuf.appendChar( in.getC( count ));
+  charBuf.appendChar( in.getC( count ), 32);
 
 }
 
 
-/*
-Str::Str( const Str& in1, const Str& in2 )
-{
-charBuf.setAppendIncrease( 16 );
-cArray.setSize( = in1.getSize() + in2.getSize() );
-
-
-Int32 last = 0;
-for( Int32 count = 0; count < in1.arraySize;
-                                     count++ )
-  {
-  cArray.setC( last, in1.charAt( count ));
-  last++;
-  }
-
-for( Int32 count = 0; count < in2.arraySize;
-                                     count++ )
-  {
-  cArray.setC( last, in2.charAt( count ));
-  last++;
-  }
-}
-*/
 
 
 
 Str::Str( Int64 n )
 {
-charBuf.setAppendIncrease( 16 );
-
 if( n == 0 )
   {
-  charBuf.appendChar( '0' );
+  charBuf.appendChar( '0', 32 );
   return;
   }
 
-char tempBuf[100] = { 1,2,3 };
+CharArray tempBuf;
+tempBuf.setSize( 1024 );
 
 Int32 last = 0;
 bool isNegative = false;
@@ -121,8 +95,8 @@ while( toDivide != 0 )
   {
   Int64 digit = toDivide % 10;
   // Ascii values go from '0' up to '9'.
-  tempBuf[last] = Casting::i32ToChar(
-               Casting::i64ToI32(('0' + digit)));
+  tempBuf.setC( last, Casting::i32ToChar(
+               Casting::i64ToI32(('0' + digit))));
   last++;
 
   toDivide = toDivide / 10;
@@ -130,17 +104,18 @@ while( toDivide != 0 )
 
 if( isNegative )
   {
-  tempBuf[last] = '-';
+  tempBuf.setC( last, '-' );
   last++;
   }
 
+// Clears it too.
 charBuf.setSize( last );
 
 // Reverse it.
 for( Int32 count = last - 1; count >= 0;
                                        count-- )
   {
-  charBuf.appendChar( tempBuf[count] );
+  charBuf.appendChar( tempBuf.getC( count ), 32 );
   }
 }
 
@@ -158,7 +133,8 @@ void Str::append( const Str& in )
 const Int32 max = in.getLast();
 
 for( Int32 count = 0; count < max; count++ )
-  charBuf.appendChar( in.charBuf.getC( count ));
+  charBuf.appendChar( in.charBuf.getC( count ),
+                                            32 );
 
 }
 
@@ -171,28 +147,28 @@ for( Int32 count = 0; count < max; count++ )
 void Str::reverse( void )
 {
 const Int32 max = charBuf.getLast();
-char* tempBuf = new char[Casting::i32ToU64(
-                                        max )];
+
+CharArray tempBuf;
+tempBuf.setSize( max );
 
 // Reverse it.
 Int32 where = 0;
 for( Int32 count = max - 1; count >= 0; count-- )
   {
-  tempBuf[where] = charBuf.getC( count );
+  tempBuf.setC( where, charBuf.getC( count ));
   where++;
   }
 
 charBuf.clear();
 for( Int32 count = 0; count < max; count++ )
-  charBuf.appendChar( tempBuf[count] );
+  charBuf.appendChar( tempBuf.getC( count ), 32 );
 
-delete[] tempBuf;
 }
 
 
 
-/*
-void CharBuf::appendCharPt( const char* pStr )
+
+void Str::appendCharPt( const char* pStr )
 {
 const char* sizePoint = pStr;
 Int32 strSize = 0;
@@ -206,16 +182,12 @@ for( Int32 count = 0; count < 10000; count++ )
   strSize++;
   }
 
-// Need the size before I increase it, or not.
-if( (last + strSize + 2) >= cArray.getSize() )
-  increaseSize( strSize + (1024 * 16) );
+const Int32 max = strSize;
 
 // Now it is big enough.
-for( Int32 count = 0; count < strSize; count++ )
+for( Int32 count = 0; count < max; count++ )
   {
-  cArray.setC( last, *pStr );
-  last++;
+  charBuf.appendChar( *pStr, max + 2 );
   pStr++;
   }
 }
-*/

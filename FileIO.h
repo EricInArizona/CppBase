@@ -25,9 +25,9 @@ class FileIO
 
   public:
   static bool exists( const Str& fileName );
-  static void writeCharAr( const Str& fileName,
-                        const CharArray& cArray );
+  static void writeCharBuf( const Str& fileName,
+                        const CharBuf& cBuf );
   static bool readAll( const Str& fileName,
-                       CharArray& cArray );
+                       CharBuf& cBuf );
 
   };

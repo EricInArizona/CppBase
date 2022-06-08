@@ -17,6 +17,7 @@
 #include "BasicTypes.h"
 #include "CharArray.h"
 #include "RangeC.h"
+#include "OpenCharArray.h"
 
 
 
@@ -27,14 +28,17 @@ class CharBuf
   Int32 testForCopy = 123;
   CharArray cArray;
   Int32 last = 0;
-  Int32 appendIncrease = 1024 * 16;
+
   void increaseSize( Int32 howMuch );
 
   public:
   CharBuf( void );
   CharBuf( const CharBuf &in );
+  // Can't make a constructor for a Str because
+  // Str.h contains CharBuf.h.
   ~CharBuf( void );
-  void setSize( Int32 howBig );
+
+  void setSize( const Int32 howBig );
 
   inline Int32 getLast( void ) const
     {
@@ -46,20 +50,20 @@ class CharBuf
     last = 0;
     }
 
-  inline void setAppendIncrease( Int32 setTo )
-    {
-    if( setTo < 1 )
-      throw "CharBuf.setAppendIncrease.";
-
-    appendIncrease = setTo;
-    }
-
   void copyToCharArray( CharArray& copyTo );
+  void copyToOpenCharArray(
+                  OpenCharArray& copyTo ) const;
+  void copyFromOpenCharArray(
+                  const OpenCharArray& copyFrom );
 
-  void appendChar( const char toSet );
+  void appendChar( const char toSet,
+                   const Int32 increase );
+
   void appendCharArray( const CharArray& toAdd,
                         const Int32 howMany );
+
   void appendCharBuf( const CharBuf& charBuf );
+
   inline char getC( const Int32 where ) const
     {
     return cArray.getC( where );
