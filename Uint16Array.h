@@ -21,7 +21,7 @@ class Uint16Array
   private:
   Uint16* cArray;
   Int32 arraySize = 1;
-  Int32 testForCopy = 123;
+  bool testForCopy = false;
 
   public:
   inline Uint16Array( void )
@@ -37,7 +37,7 @@ class Uint16Array
     cArray = new Uint16[
                   Casting::i32ToU64( arraySize )];
 
-    if( in.testForCopy == 789 )
+    if( in.testForCopy )
       return;
 
     throw "Uint16Array copy constructor";

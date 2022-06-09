@@ -95,6 +95,7 @@ readAr.setSize( Casting::i64ToI32( howMany ));
 
 inFile.read( readAr.cArray, howMany );
 
+// setSize sets last to zero also.
 cBuf.setSize( Casting::i64ToI32( howMany + 1024 ));
 for( Int32 count = 0; count < howMany; count++ )
   cBuf.appendChar( readAr.getC( count ),

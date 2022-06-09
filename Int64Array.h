@@ -18,7 +18,7 @@
 class Int64Array
   {
   private:
-  Int32 testForCopy = 123;
+  bool testForCopy = false;
   Int32 arraySize = 0;
   Int64* iArray;
 
@@ -36,8 +36,7 @@ class Int64Array
     iArray = new Int64[
               Casting::i32ToU64( arraySize )];
 
-    // Make the compiler think in is being used.
-    if( in.testForCopy == 7 )
+    if( in.testForCopy )
       return;
 
     throw "Int64Array copy constructor.";

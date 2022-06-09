@@ -24,9 +24,8 @@
 class CharArray
   {
   private:
-  Int32 testForCopy = 123;
+  bool testForCopy = false;
 
-  // Don't return a pointer directly to this.
   char* cArray;
 
   // I don't want to use any single array that
@@ -51,7 +50,7 @@ class CharArray
     cArray = new char[Casting::i32ToU64(
                                 arraySize )];
 
-    if( in.testForCopy == 789 )
+    if( in.testForCopy )
       return;
 
     const char* showS = "The CharArray copy"
@@ -87,25 +86,6 @@ class CharArray
     return arraySize;
     }
 
-  inline Int32 findChar( const Int32 start,
-                         const char toFind )
-    {
-    const Int32 max = arraySize;
-    if( start < 0 )
-      return -1;
-
-    if( start >= max )
-      return -1;
-
-    for( Int32 count = start; count < max; count++ )
-      {
-      if( cArray[count] == toFind )
-        return count;
-      }
-
-    return -1; // Didn't find it.
-    }
-
   inline void copy( const CharArray& copyFrom )
     {
     const Int32 fromSize = copyFrom.getSize();
@@ -129,29 +109,20 @@ class CharArray
         0x7FFFFFFF )
       throw "CharArray.increaseSize too big.";
 
+    const Int32 max = arraySize;
+    arraySize = arraySize + howMuch;
+
     char* tempArray = new char[Casting::i32ToU64(
                                  arraySize )];
 
-    const Int32 max = arraySize;
-
-    // For later optimizing:
-    // What is the assembly language code for
-    // a memory copy?
-
+    // Memory.cpp ?
     for( Int32 count = 0; count < max; count++ )
       tempArray[count] = cArray[count];
 
     delete[] cArray;
 
-    arraySize = arraySize + howMuch;
-
-    cArray = new char[Casting::i32ToU64(
-                                     arraySize )];
-
-    for( Int32 count = 0; count < max; count++ )
-      cArray[count] = tempArray[count];
-
-    delete[] tempArray;
+    // Assign the pointer to the new array.
+    cArray = tempArray;
     }
 
   inline char getC( const Int32 where ) const

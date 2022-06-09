@@ -26,7 +26,7 @@ CharBuf::CharBuf( const CharBuf& in )
 {
 // Make the compiler think the in value is
 // being used.
-if( in.testForCopy == 789 )
+if( in.testForCopy )
   return;
 
 throw "CharBuf copy constructor called.";
@@ -75,11 +75,6 @@ void CharBuf::appendCharArray(
                        const CharArray& toAdd,
                        const Int32 howMany )
 {
-if( ( Casting::i32ToU64( cArray.getSize() ) +
-      Casting::i32ToU64( howMany ) ) >=
-      0x7FFFFFFF )
- throw "CharBuf.appendCharArray too big.";
-
 if( (last + howMany + 2) >= cArray.getSize() )
   increaseSize( howMany + (1024 * 16) );
 

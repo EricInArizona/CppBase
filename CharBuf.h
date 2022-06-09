@@ -25,7 +25,7 @@
 class CharBuf
   {
   private:
-  Int32 testForCopy = 123;
+  bool testForCopy = false;
   CharArray cArray;
   Int32 last = 0;
 
@@ -70,5 +70,25 @@ class CharBuf
     }
 
   void copy( const CharBuf& toCopy );
+
+  inline Int32 findChar( const Int32 start,
+                         const char toFind )
+    {
+    const Int32 max = last;
+    if( start < 0 )
+      return -1;
+
+    if( start >= max )
+      return -1;
+
+    for( Int32 count = start; count < max; count++ )
+      {
+      if( cArray.getC( count ) == toFind )
+        return count;
+
+      }
+
+    return -1; // Didn't find it.
+    }
 
   };

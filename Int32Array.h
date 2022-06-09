@@ -19,7 +19,7 @@
 class Int32Array
   {
   private:
-  Int32 testForCopy = 123;
+  bool testForCopy = false;
   Int32 arraySize = 1;
   Int32* iArray;
 
@@ -39,7 +39,7 @@ class Int32Array
                Casting::i32ToU64( arraySize )];
 
     // Make the compiler think in is being used.
-    if( in.testForCopy == 7 )
+    if( in.testForCopy )
       return;
 
     throw "Int32Array copy constructor.";

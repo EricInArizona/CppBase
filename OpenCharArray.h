@@ -19,7 +19,7 @@
 class OpenCharArray
   {
   private:
-  Int32 testForCopy = 123;
+  bool testForCopy = false;
   Int32 arraySize = 1;
 
   public:
@@ -38,7 +38,7 @@ class OpenCharArray
     cArray = new char[Casting::i32ToU64(
                                 arraySize )];
 
-    if( in.testForCopy == 789 )
+    if( in.testForCopy )
       return;
 
     const char* showS = "The OpenCharArray copy"

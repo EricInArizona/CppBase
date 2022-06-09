@@ -19,7 +19,7 @@
 class BoolArray
   {
   private:
-  Int32 testForCopy = 123;
+  bool testForCopy = false;
   Int32 arraySize = 1;
   bool* bArray;
 

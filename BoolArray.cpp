@@ -26,7 +26,7 @@ arraySize = 1;
 bArray = new bool[Casting::i32ToU64( arraySize )];
 
 // Make the compiler think in is being used.
-if( in.testForCopy == 7 )
+if( in.testForCopy )
   return;
 
 const char* showS = "The BoolArray copy"
@@ -47,8 +47,8 @@ delete[] bArray;
 
 void BoolArray::setSize( const Int32 howBig )
 {
-if( howBig < 0 )
-  throw "BoolArray array size < 0.";
+if( howBig < 1 )
+  throw "BoolArray array size < 1.";
 
 arraySize = howBig;
 
