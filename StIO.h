@@ -29,6 +29,7 @@ class StIO
   static void putS( const char* toWrite );
   static void printFD( const Int32 d );
   static void putChar( const int c );
+  static void putWChar( const Uint16 c );
   static void putCharBuf( const CharBuf& charBuf );
   static void putStr( const Str& str );
 

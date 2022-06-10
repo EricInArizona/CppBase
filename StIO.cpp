@@ -14,8 +14,8 @@
 
 // Always put these last.
 #include <stdio.h>
+#include <wchar.h>
 
-// #include <wchar.h>
 // #include <time.h>
 // #include <select.h>
 
@@ -93,7 +93,7 @@ if( toWrite == nullptr )
 // This adds a newline character to the end
 // of the string.
 
-// puts( "Testing.\n" );
+// puts( "Testing." );
 
 puts( toWrite );
 
@@ -115,6 +115,17 @@ void StIO::putChar( const int c )
 {
 // int putchar( int c );
 putchar( c );
+}
+
+
+
+// putwchar won't work on Windows?
+
+// wchar_t is the type for a wide character.
+// putwchar() is in wchar.h
+void StIO::putWChar( const Uint16 c )
+{
+putwchar( c );
 }
 
 
