@@ -13,6 +13,16 @@
 #include "Casting.h"
 
 
+
+Str::Str( void )
+{
+charBuf.setSize( 1 );
+charBuf.appendChar( 0, 2 );
+
+}
+
+
+
 Str::Str( const char* pStr )
 {
 if( pStr == nullptr )

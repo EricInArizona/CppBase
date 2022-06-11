@@ -28,6 +28,7 @@ class Str
   CharBuf charBuf;
 
   public:
+  Str( void );
   Str( const char* pStr );
   Str( const Str& in );
   Str( const CharArray& cArray );
