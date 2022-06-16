@@ -91,4 +91,19 @@ class CharBuf
     return -1; // Didn't find it.
     }
 
+
+  inline Uint32 getUint32( const Int32 where ) const
+    {
+    Uint32 toSet = getC( where );
+    toSet <<= 24;
+    Uint32 nextC = getC( where + 1 );
+    toSet |= nextC << 16;
+    nextC = charBuf.getC( where + 2 );
+    toSet |= nextC << 8;
+    nextC = charBuf.getC( where + 3 );
+    toSet |= nextC;
+
+    return toSet;
+    }
+
   };
