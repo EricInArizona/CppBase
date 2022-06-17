@@ -45,6 +45,17 @@ class CharBuf
     return last;
     }
 
+  inline void truncateLast( Int32 setTo )
+    {
+    if( setTo < 0 )
+      throw "CharBuf.truncateLast < zero.";
+
+    if( setTo > last )
+      throw "CharBuf.truncateLast too big.";
+
+    last = setTo;
+    }
+
   inline void clear( void )
     {
     last = 0;
@@ -91,16 +102,55 @@ class CharBuf
     return -1; // Didn't find it.
     }
 
+  void appendUint64( const Uint64 toSet,
+                     const Int32 increase )
+    {
+    // Big endian.
+    char toAdd = Casting::u64ToByte(
+                         toSet >> (7 * 8) );
+    appendChar( toAdd, increase );
+
+    toAdd = Casting::u64ToByte(
+                         toSet >> (6 * 8) );
+    appendChar( toAdd, increase );
+
+    toAdd = Casting::u64ToByte(
+                         toSet >> (5 * 8) );
+    appendChar( toAdd, increase );
+
+    toAdd = Casting::u64ToByte(
+                         toSet >> (4 * 8) );
+    appendChar( toAdd, increase );
+
+    toAdd = Casting::u64ToByte(
+                         toSet >> (3 * 8) );
+    appendChar( toAdd, increase );
+
+    toAdd = Casting::u64ToByte(
+                         toSet >> (2 * 8) );
+    appendChar( toAdd, increase );
+
+    toAdd = Casting::u64ToByte(
+                         toSet >> (1 * 8) );
+    appendChar( toAdd, increase );
+
+    toAdd = Casting::u64ToByte( toSet );
+    appendChar( toAdd, increase );
+    }
+
 
   inline Uint32 getUint32( const Int32 where ) const
     {
-    Uint32 toSet = getC( where );
+    Uint32 toSet = 0xFF & getC( where );
+    if( (toSet & 0x80) != 0 )
+      throw "CharBuf. Yes it got the bit.";
+
     toSet <<= 24;
-    Uint32 nextC = getC( where + 1 );
+    Uint32 nextC = 0xFF & getC( where + 1 );
     toSet |= nextC << 16;
-    nextC = charBuf.getC( where + 2 );
+    nextC = 0xFF & getC( where + 2 );
     toSet |= nextC << 8;
-    nextC = charBuf.getC( where + 3 );
+    nextC = 0xFF & getC( where + 3 );
     toSet |= nextC;
 
     return toSet;

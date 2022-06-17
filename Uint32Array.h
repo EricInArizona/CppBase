@@ -32,7 +32,7 @@ class Uint32Array
                   Casting::i32ToU64( arraySize )];
     }
 
-  inline Uint32Array( const Uint16Array &in )
+  inline Uint32Array( const Uint32Array &in )
     {
     arraySize = 1;
     cArray = new Uint32[
@@ -61,6 +61,7 @@ class Uint32Array
                   Casting::i32ToU64( arraySize )];
 
     }
+
 
   inline Int32 getSize( void ) const
     {
@@ -92,32 +93,6 @@ class Uint32Array
     for( Int32 count = 0; count < max; count++ )
       cArray[count] = in.cArray[count];
 
-    }
-
-
-  void setFromCharBuf( const CharBuf& charBuf,
-                       const Int32 start,
-                       const Int32 howMany )
-    {
-    Int32 wordCount = 0;
-    // for( Int32 count = start; count <
-     //               (start + howMany); count++ )
-    // It is big endian:
-    Uint32 toSet = charBuf.getC( wordCount );
-    toSet <<= 24;
-    Uint32 nextC = charBuf.getC( wordCount );
-    toSet |= next << 16;
-    nextC = charBuf.getC( wordCount );
-    toSet |= next << 8;
-    nextC = charBuf.getC( wordCount );
-    toSet |= next;
-
-/*
- (Message_Block[t4]) << 24) |
-           (Message_Block[t4 + 1]) << 16) |
-           (Message_Block[t4 + 2]) &lt;&lt; 8) |
-           (((uint32_t)context-&gt;Message_Block[t4 + 3]));
-*/
     }
 
 
