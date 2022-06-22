@@ -147,7 +147,7 @@ class Casting
   inline static char i32ToByte( Int32 x )
     {
     if( x < 0 )
-      throw "Truncating a negative: char x.";
+      throw "Truncating a negative. i32ToByte.";
 
     // char result = static_cast<char>( x );
     char result = x & 0x7F;

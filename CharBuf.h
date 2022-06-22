@@ -139,17 +139,45 @@ class CharBuf
     }
 
 
+
+  void appendUint32( const Uint32 toSet,
+                     const Int32 increase )
+    {
+    // Big endian.
+    char toAdd = Casting::u64ToByte(
+                         toSet >> (3 * 8) );
+    appendChar( toAdd, increase );
+
+    toAdd = Casting::u64ToByte(
+                         toSet >> (2 * 8) );
+    appendChar( toAdd, increase );
+
+    toAdd = Casting::u64ToByte(
+                         toSet >> (1 * 8) );
+    appendChar( toAdd, increase );
+
+    toAdd = Casting::u64ToByte( toSet );
+    appendChar( toAdd, increase );
+    }
+
+
   inline Uint32 getUint32( const Int32 where ) const
     {
+    // Big endian.
     Uint32 toSet = 0xFF & getC( where );
-    if( (toSet & 0x80) != 0 )
-      throw "CharBuf. Yes it got the bit.";
+    // if( (toSet & 0x80) != 0 )
+      // throw "CharBuf. Yes it got the bit.";
 
-    toSet <<= 24;
+    toSet <<= 8;
+
     Uint32 nextC = 0xFF & getC( where + 1 );
-    toSet |= nextC << 16;
+    toSet |= nextC;
+    toSet <<= 8;
+
     nextC = 0xFF & getC( where + 2 );
-    toSet |= nextC << 8;
+    toSet |= nextC;
+    toSet <<= 8;
+
     nextC = 0xFF & getC( where + 3 );
     toSet |= nextC;
 
