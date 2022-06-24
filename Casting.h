@@ -144,20 +144,7 @@ class Casting
     return result;
     }
 
-  inline static char i32ToByte( Int32 x )
-    {
-    if( x < 0 )
-      throw "Truncating a negative. i32ToByte.";
-
-    // char result = static_cast<char>( x );
-    char result = x & 0x7F;
-    if( (x & 0x80) != 0 )
-      result |= 0x80;
-
-    return result;
-    }
-
-  inline static char u64ToByte( Uint64 x )
+  inline static char u64ToChar( Uint64 x )
     {
     // char result = static_cast<char>( x );
     char result = x & 0x7F;
@@ -167,5 +154,30 @@ class Casting
     return result;
     }
 
+
+  inline static Uint8 i32ToU8( Int32 x )
+    {
+    Uint8 result = x & 0xFF;
+    return result;
+    }
+
+
+  inline static Uint8 u32ToU8( Uint32 x )
+    {
+    Uint8 result = x & 0xFF;
+    return result;
+    }
+
+  inline static Uint8 u64ToU8( Uint64 x )
+    {
+    Uint8 result = x & 0xFF;
+    return result;
+    }
+
+  inline static Uint32 charToU32( char x )
+    {
+    Uint32 result = x & 0xFF;
+    return result;
+    }
 
   };

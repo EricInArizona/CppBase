@@ -21,7 +21,7 @@ class ByteHex
 
   public:
 
-  static inline char valToChar( char c )
+  static inline char valToChar( Uint8 c )
     {
     switch( c )
       {
@@ -46,19 +46,18 @@ class ByteHex
     return '?';
     }
 
-  static inline char getRightChar( char theByte )
+  static inline char getRightChar( Uint8 theByte )
     {
     return valToChar( theByte & 0xF );
     }
 
-  static inline char getLeftChar( char theByte )
+  static inline char getLeftChar( Uint8 theByte )
     {
     return valToChar( (theByte >> 4) & 0xF );
     }
 
 
-  static inline Int32 charToDigit(
-                             const char c )
+  static inline Uint8 charToU8( const char c )
     {
     switch( c )
       {
@@ -88,7 +87,7 @@ class ByteHex
       case 'F': return 15;
       }
 
-    return -1;
+    return 128;
     }
 
   static inline bool isValidChar( const char c )

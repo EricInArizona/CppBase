@@ -9,7 +9,6 @@
 
 
 
-
 #pragma once
 
 
@@ -19,6 +18,13 @@
 #include "RangeC.h"
 #include "OpenCharArray.h"
 
+
+// CharBuf is a sequence of bytes.  It can
+// be interpreted in different ways, as char
+// values or Uint8, or Uint32 values or anything
+// else.  Some stdio.h functions use void pointers
+// to refer to a series of bytes.  This can
+// be used for any series of bytes like that.
 
 
 
@@ -34,8 +40,6 @@ class CharBuf
   public:
   CharBuf( void );
   CharBuf( const CharBuf &in );
-  // Can't make a constructor for a Str because
-  // Str.h contains CharBuf.h.
   ~CharBuf( void );
 
   void setSize( const Int32 howBig );
@@ -80,108 +84,28 @@ class CharBuf
     return cArray.getC( where );
     }
 
+  inline Uint8 getU8( const Int32 where ) const
+    {
+    return cArray.getU8( where );
+    }
+
   void copy( const CharBuf& toCopy );
 
-  inline Int32 findChar( const Int32 start,
-                         const char toFind )
-    {
-    const Int32 max = last;
-    if( start < 0 )
-      return -1;
+  Int32 findChar( const Int32 start,
+                  const char toFind );
 
-    if( start >= max )
-      return -1;
+  void appendU8( const Uint8 toSet,
+                 const Int32 increase );
 
-    for( Int32 count = start; count < max; count++ )
-      {
-      if( cArray.getC( count ) == toFind )
-        return count;
+  void appendU32( const Uint32 toSet,
+                  const Int32 increase );
 
-      }
+  void appendU64( const Uint64 toSet,
+                  const Int32 increase );
 
-    return -1; // Didn't find it.
-    }
+  Uint32 getU32( const Int32 where ) const;
+  Uint64 getU64( const Int32 where ) const;
 
-  void appendUint64( const Uint64 toSet,
-                     const Int32 increase )
-    {
-    // Big endian.
-    char toAdd = Casting::u64ToByte(
-                         toSet >> (7 * 8) );
-    appendChar( toAdd, increase );
-
-    toAdd = Casting::u64ToByte(
-                         toSet >> (6 * 8) );
-    appendChar( toAdd, increase );
-
-    toAdd = Casting::u64ToByte(
-                         toSet >> (5 * 8) );
-    appendChar( toAdd, increase );
-
-    toAdd = Casting::u64ToByte(
-                         toSet >> (4 * 8) );
-    appendChar( toAdd, increase );
-
-    toAdd = Casting::u64ToByte(
-                         toSet >> (3 * 8) );
-    appendChar( toAdd, increase );
-
-    toAdd = Casting::u64ToByte(
-                         toSet >> (2 * 8) );
-    appendChar( toAdd, increase );
-
-    toAdd = Casting::u64ToByte(
-                         toSet >> (1 * 8) );
-    appendChar( toAdd, increase );
-
-    toAdd = Casting::u64ToByte( toSet );
-    appendChar( toAdd, increase );
-    }
-
-
-
-  void appendUint32( const Uint32 toSet,
-                     const Int32 increase )
-    {
-    // Big endian.
-    char toAdd = Casting::u64ToByte(
-                         toSet >> (3 * 8) );
-    appendChar( toAdd, increase );
-
-    toAdd = Casting::u64ToByte(
-                         toSet >> (2 * 8) );
-    appendChar( toAdd, increase );
-
-    toAdd = Casting::u64ToByte(
-                         toSet >> (1 * 8) );
-    appendChar( toAdd, increase );
-
-    toAdd = Casting::u64ToByte( toSet );
-    appendChar( toAdd, increase );
-    }
-
-
-  inline Uint32 getUint32( const Int32 where ) const
-    {
-    // Big endian.
-    Uint32 toSet = 0xFF & getC( where );
-    // if( (toSet & 0x80) != 0 )
-      // throw "CharBuf. Yes it got the bit.";
-
-    toSet <<= 8;
-
-    Uint32 nextC = 0xFF & getC( where + 1 );
-    toSet |= nextC;
-    toSet <<= 8;
-
-    nextC = 0xFF & getC( where + 2 );
-    toSet |= nextC;
-    toSet <<= 8;
-
-    nextC = 0xFF & getC( where + 3 );
-    toSet |= nextC;
-
-    return toSet;
-    }
+  void testBasics( void );
 
   };

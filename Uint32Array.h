@@ -14,13 +14,12 @@
 #include "BasicTypes.h"
 #include "RangeC.h"
 #include "Casting.h"
-#include "CharBuf.h"
 
 
 class Uint32Array
   {
   private:
-  Uint32* cArray;
+  Uint32* uArray;
   Int32 arraySize = 1;
   bool testForCopy = false;
 
@@ -28,14 +27,14 @@ class Uint32Array
   inline Uint32Array( void )
     {
     arraySize = 1;
-    cArray = new Uint32[
+    uArray = new Uint32[
                   Casting::i32ToU64( arraySize )];
     }
 
   inline Uint32Array( const Uint32Array &in )
     {
     arraySize = 1;
-    cArray = new Uint32[
+    uArray = new Uint32[
                   Casting::i32ToU64( arraySize )];
 
     if( in.testForCopy )
@@ -47,7 +46,7 @@ class Uint32Array
 
   inline ~Uint32Array( void )
     {
-    delete[] cArray;
+    delete[] uArray;
     }
 
   inline void setSize( Int32 howBig )
@@ -56,8 +55,8 @@ class Uint32Array
       return;
 
     arraySize = howBig;
-    delete[] cArray;
-    cArray = new Uint32[
+    delete[] uArray;
+    uArray = new Uint32[
                   Casting::i32ToU64( arraySize )];
 
     }
@@ -73,7 +72,7 @@ class Uint32Array
     RangeC::test2( where, 0, arraySize - 1,
                   "Uint32Array.getVal() range." );
 
-    return cArray[where];
+    return uArray[where];
     }
 
   inline void setVal( const Int32 where,
@@ -82,7 +81,7 @@ class Uint32Array
     RangeC::test2( where, 0, arraySize - 1,
                   "Uint32Array.setVal() range." );
 
-    cArray[where] = setTo;
+    uArray[where] = setTo;
     }
 
   inline void copy( const Uint32Array& in )
@@ -91,7 +90,7 @@ class Uint32Array
 
     const Int32 max = arraySize;
     for( Int32 count = 0; count < max; count++ )
-      cArray[count] = in.cArray[count];
+      uArray[count] = in.uArray[count];
 
     }
 

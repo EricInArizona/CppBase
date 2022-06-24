@@ -133,6 +133,14 @@ class CharArray
     return cArray[where];
     }
 
+  inline Uint8 getU8( const Int32 where ) const
+    {
+    RangeC::test2( where, 0, arraySize - 1,
+             "CharArray.getU8() arraySize." );
+
+    return cArray[where] & 0xFF;
+    }
+
   inline void setC( const Int32 where,
                     const char toSet )
     {
@@ -140,6 +148,19 @@ class CharArray
              "CharArray.setC() arraySize." );
 
     cArray[where] = toSet;
+    }
+
+  inline void setU8( const Int32 where,
+                     const Uint8 toSet )
+    {
+    RangeC::test2( where, 0, arraySize - 1,
+             "CharArray.setU8() arraySize." );
+
+    char changeIt = toSet & 0x7F;
+    if( (toSet & 0x80) != 0 )
+      changeIt |= 0x80;
+
+    cArray[where] = changeIt;
     }
 
   };
