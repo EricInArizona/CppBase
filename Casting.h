@@ -128,6 +128,15 @@ class Casting
     return result;
     }
 
+  inline static Int32 u32ToI32( Uint32 x )
+    {
+    if( x > 0x7FFFFFFF )
+      throw "u32ToI32() too big of an x.";
+
+    Int32 result = x & 0x7FFFFFFF;
+    return result;
+    }
+
 
   inline static char i32ToChar( Int32 x )
     {

@@ -106,6 +106,13 @@ class CharBuf
   Uint32 getU32( const Int32 where ) const;
   Uint64 getU64( const Int32 where ) const;
 
+  Uint32 get24Bits( const Int32 where ) const;
+  Uint32 get16Bits( const Int32 where ) const;
+
+  void append24Bits( const Uint32 toSet,
+                      const Int32 increase );
+
   void testBasics( void );
+  bool equalsCBuf( CharBuf& toCheck );
 
   };

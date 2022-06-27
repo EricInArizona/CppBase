@@ -199,6 +199,56 @@ return toSet;
 
 
 
+// Used in Base64 encoding.
+Uint32 CharBuf::get24Bits( const Int32 where ) const
+{
+// Big endian.
+Uint32 toSet = getU8( where );
+toSet <<= 8;
+
+Uint32 nextC = getU8( where + 1 );
+toSet |= nextC;
+toSet <<= 8;
+
+nextC = getU8( where + 2 );
+toSet |= nextC;
+
+return toSet;
+}
+
+
+
+Uint32 CharBuf::get16Bits( const Int32 where ) const
+{
+// Big endian.
+Uint32 toSet = getU8( where );
+toSet <<= 8;
+
+Uint32 nextC = getU8( where + 1 );
+toSet |= nextC;
+
+return toSet;
+}
+
+
+
+void CharBuf::append24Bits( const Uint32 toSet,
+                             const Int32 increase )
+{
+// Big endian.
+Uint8 toAdd = Casting::u32ToU8(
+                         toSet >> (2 * 8) );
+appendU8( toAdd, increase );
+
+toAdd = Casting::u32ToU8(
+                         toSet >> (1 * 8) );
+appendU8( toAdd, increase );
+
+toAdd = Casting::u32ToU8( toSet );
+appendU8( toAdd, increase );
+}
+
+
 void CharBuf::appendCharArray(
                        const CharArray& toAdd,
                        const Int32 howMany )
@@ -323,3 +373,22 @@ for( Int32 count = start; count < max; count++ )
 
 return -1; // Didn't find it.
 }
+
+
+bool CharBuf::equalsCBuf( CharBuf& toCheck )
+{
+if( last != toCheck.last )
+  return false;
+
+const Int32 max = last;
+for( Int32 count = 0; count < max; count++ )
+  {
+  if( cArray.getC( count ) != 
+                  toCheck.cArray.getC( count ) )
+    return false;
+
+  }
+
+return true;
+}
+
