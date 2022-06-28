@@ -20,7 +20,7 @@
 #include <fstream>
 
 
-void FileIO::writeCharBuf( const Str& fileName,
+bool FileIO::writeAll( const char* fileName,
                        const CharBuf& cBuf )
 {
 try
@@ -28,12 +28,9 @@ try
 const Int32 howMany = cBuf.getLast();
 
 OpenCharArray writeAr;
-cBuf.copyToOpenCharArray( writeAr );
+cBuf.copyToOpenCharArrayNoNull( writeAr );
 
-OpenCharArray nameBuffer;
-fileName.copyToOpenArray( nameBuffer );
-
-std::ofstream outFile( nameBuffer.cArray,
+std::ofstream outFile( fileName,
                        std::ofstream::binary );
 
 outFile.write( writeAr.cArray,
@@ -48,7 +45,7 @@ outFile.write( writeAr.cArray,
 outFile.close();
 
 // Any OpenCharArray goes out of scope.
-
+return true;
 }
 catch( ... )
   {
@@ -56,21 +53,19 @@ catch( ... )
                 " exception.";
 
   StIO::putS( errorS );
+  return false;
   }
 }
 
 
 
-bool FileIO::readAll( const Str& fileName,
+bool FileIO::readAll( const char* fileName,
                       CharBuf& cBuf )
 {
 try
 {
-OpenCharArray nameBuffer;
-fileName.copyToOpenArray( nameBuffer );
-
-std::ifstream inFile( nameBuffer.cArray,
-                        std::ifstream::binary );
+std::ifstream inFile( fileName,
+                      std::ifstream::binary );
 
 inFile.seekg( 0, inFile.end );
 Int64 howMany = inFile.tellg();
@@ -117,14 +112,11 @@ catch( ... )
 
 
 
-bool FileIO::exists( const Str& fileName )
+bool FileIO::exists( const char* fileName )
 {
 try
 {
-OpenCharArray nameBuffer;
-fileName.copyToOpenArray( nameBuffer );
-
-std::ifstream inFile( nameBuffer.cArray,
+std::ifstream inFile( fileName,
                       std::ifstream::binary );
 
 return inFile.good();
@@ -138,4 +130,15 @@ catch( ... )
   StIO::putS( errorS );
   return false;
   }
+}
+
+
+bool FileIO::copy( const char* fromName,
+                    const char* toName )
+{
+CharBuf cBuf;
+if( !readAll( fromName, cBuf ))
+  return false;
+
+return writeAll( toName, cBuf );
 }

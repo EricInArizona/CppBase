@@ -140,15 +140,6 @@ for( Int32 count = 0; count < max; count++ )
 
 
 
-void StIO::putStr( const Str& str )
-{
-const Int32 max = str.getLast();
-for( Int32 count = 0; count < max; count++ )
-  putchar( str.getC( count ));
-
-}
-
-
 
 /*
 In Windows:

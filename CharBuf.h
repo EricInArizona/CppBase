@@ -39,6 +39,8 @@ class CharBuf
 
   public:
   CharBuf( void );
+  CharBuf( const char* pStr );
+  CharBuf( Int64 n );
   CharBuf( const CharBuf &in );
   ~CharBuf( void );
 
@@ -66,13 +68,21 @@ class CharBuf
     }
 
   void copyToCharArray( CharArray& copyTo );
-  void copyToOpenCharArray(
+  void copyToOpenCharArrayNoNull(
                   OpenCharArray& copyTo ) const;
-  void copyFromOpenCharArray(
+  void copyToOpenCharArrayNull(
+                  OpenCharArray& copyTo ) const;
+
+  void copyFromOpenCharArrayNoNull(
+                  const OpenCharArray& copyFrom );
+
+  void copyFromOpenCharArrayNull(
                   const OpenCharArray& copyFrom );
 
   void appendChar( const char toSet,
                    const Int32 increase );
+
+  void appendCharPt( const char* pStr );
 
   void appendCharArray( const CharArray& toAdd,
                         const Int32 howMany );
@@ -94,7 +104,10 @@ class CharBuf
   Int32 findChar( const Int32 start,
                   const char toFind );
 
-  void appendU8( const Uint8 toSet,
+  void appendU8( const Uint32 toSet,
+                 const Int32 increase );
+
+  void appendU16( const Uint32 toSet,
                  const Int32 increase );
 
   void appendU32( const Uint32 toSet,
@@ -114,5 +127,7 @@ class CharBuf
 
   void testBasics( void );
   bool equalsCBuf( CharBuf& toCheck );
+  void reverse( void );
+
 
   };

@@ -15,7 +15,6 @@
 
 #include "BasicTypes.h"
 #include "../CppBase/CharBuf.h"
-#include "../CppBase/Str.h"
 
 
 
@@ -31,7 +30,6 @@ class StIO
   static void putChar( const int c );
   static void putWChar( const Uint16 c );
   static void putCharBuf( const CharBuf& charBuf );
-  static void putStr( const Str& str );
 
   // bool checkKey( void );
 

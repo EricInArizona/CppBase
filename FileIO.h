@@ -14,8 +14,7 @@
 
 
 #include "BasicTypes.h"
-#include "CharArray.h"
-#include "Str.h"
+#include "CharBuf.h"
 
 
 
@@ -24,10 +23,14 @@ class FileIO
   private:
 
   public:
-  static bool exists( const Str& fileName );
-  static void writeCharBuf( const Str& fileName,
+  static bool exists( const char* fileName );
+  static bool writeAll( const char* fileName,
                         const CharBuf& cBuf );
-  static bool readAll( const Str& fileName,
+
+  static bool readAll( const char* fileName,
                        CharBuf& cBuf );
+
+  static bool copy( const char* fromName,
+                    const char* toName );
 
   };
