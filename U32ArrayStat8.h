@@ -1,3 +1,8 @@
+/*
+
+Not used.
+
+
 // Copyright Eric Chauvin 2022
 
 
@@ -18,6 +23,7 @@
 
 class U32ArrayStat8
   {
+=====
   private:
   static const Int32 arraySize = 8;
   Uint32 uArray[arraySize] = { 1, 2, 3 };
@@ -59,3 +65,5 @@ class U32ArrayStat8
     }
 
   };
+*/
+

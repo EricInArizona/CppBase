@@ -101,20 +101,29 @@ puts( toWrite );
 }
 
 
-
-
-void StIO::printFD( const Int32 d )
+void StIO::printFD( const Int64 x )
 {
-printf( "%d", d );
+printf( "%lld", x );
 }
 
 
+void StIO::printFUD( const Uint64 x )
+{
+printf( "%llu", x );
+}
 
 
 void StIO::putChar( const int c )
 {
 // int putchar( int c );
 putchar( c );
+}
+
+
+void StIO::putLF( void )
+{
+// int putchar( int c );
+putchar( '\n' );
 }
 
 
